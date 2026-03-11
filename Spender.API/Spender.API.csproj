@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <ItemGroup>
+    <ProjectReference Include="..\Spender.Shared\Spender.Shared.csproj" />
+    <ProjectReference Include="..\Spender.Auth\Spender.Auth.csproj" />
+    <ProjectReference Include="..\Spender.Transactions\Spender.Transactions.csproj" />
+    <ProjectReference Include="..\Spender.Categories\Spender.Categories.csproj" />
+    <ProjectReference Include="..\Spender.Analytics\Spender.Analytics.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+</Project>
