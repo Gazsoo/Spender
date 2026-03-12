@@ -48,6 +48,7 @@ jobs:
           build-args: |
             VITE_API_URL=${{ vars.VITE_API_URL }}
 
+      - uses: actions/checkout@v4
       - name: Copy files to Pi
         uses: appleboy/scp-action@v1
         with:
@@ -58,7 +59,6 @@ jobs:
           source: |
             docker-compose.yml
             Caddyfile
-            .env.example
           target: ~/spender/
 
       # SSH into Pi and restart containers
