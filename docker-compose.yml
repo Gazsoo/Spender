@@ -2,6 +2,9 @@ services:
   caddy:
     image: caddy:latest
     restart: always
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
     environment:
       API_DOMAIN: ${API_DOMAIN}
       APP_DOMAIN: ${APP_DOMAIN}
@@ -39,7 +42,7 @@ services:
       POSTGRES_USER: spender
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     volumes:
-      - /mnt/ssd/postgres:/var/lib/postgresql/data
+      - /mnt/ssd/postgres:/var/lib/postgresql
 
 volumes:
   caddy_data:
