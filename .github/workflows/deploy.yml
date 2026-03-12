@@ -71,3 +71,9 @@ jobs:
             docker compose pull
             docker compose up -d
             docker image prune -f   # clean up old images
+        env:
+          API_DOMAIN: ${{ vars.API_DOMAIN }}
+          APP_DOMAIN: ${{ vars.APP_DOMAIN }}
+          API_IMAGE: ghcr.io/${{ github.repository }}/spender-api:latest
+          FRONTEND_IMAGE: ghcr.io/${{ github.repository }}/spender-frontend:latest
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }} # only this needs to be a secret
