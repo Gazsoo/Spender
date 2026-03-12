@@ -48,7 +48,6 @@ jobs:
           build-args: |
             VITE_API_URL=${{ vars.VITE_API_URL }}
 
-      - uses: actions/checkout@v4
       - name: Copy files to Pi
         uses: appleboy/scp-action@v1
         with:
@@ -56,9 +55,7 @@ jobs:
           port: ${{ secrets.PORT }}
           username: ${{ secrets.USER }}
           key: ${{ secrets.SSH_KEY }}
-          source: |
-            docker-compose.yml
-            Caddyfile
+          source: "docker-compose.yml,Caddyfile"
           target: ~/spender/
 
       # SSH into Pi and restart containers
@@ -69,6 +66,7 @@ jobs:
           host: ${{ secrets.HOST }} # your cloudflare tunnel or local IP
           username: ${{ secrets.USER }} # pi or your username
           key: ${{ secrets.SSH_KEY }} # private SSH key
+          envs: API_DOMAIN,APP_DOMAIN,API_IMAGE,FRONTEND_IMAGE,DB_PASSWORD
           script: |
             cd ~/spender
             docker compose pull
