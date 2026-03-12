@@ -32,7 +32,7 @@ jobs:
           file: ./Dockerfile
           platforms: linux/arm64 # Pi architecture ✅
           push: true
-          tags: ghcr.io/${{ github.repository_owner  }}/spender-api:latest
+          tags: ghcr.io/${{ vars.OWNER  }}/spender-api:latest
 
       - name: Build and push Frontend image
         uses: docker/build-push-action@v5
@@ -41,7 +41,7 @@ jobs:
           file: ./frontend/spender-ui/Dockerfile
           platforms: linux/arm64
           push: true
-          tags: ghcr.io/${{ github.repository_owner  }}/spender-frontend:latest
+          tags: ghcr.io/${{ vars.OWNER  }}/spender-frontend:latest
           build-args: |
             VITE_API_URL=${{ vars.VITE_API_URL }}
 
@@ -74,6 +74,6 @@ jobs:
         env:
           API_DOMAIN: ${{ vars.API_DOMAIN }}
           APP_DOMAIN: ${{ vars.APP_DOMAIN }}
-          API_IMAGE: ghcr.io/${{ github.repository_owner  }}/spender-api:latest
-          FRONTEND_IMAGE: ghcr.io/${{ github.repository_owner  }}/spender-frontend:latest
+          API_IMAGE: ghcr.io/${{ vars.OWNER  }}/spender-api:latest
+          FRONTEND_IMAGE: ghcr.io/${{ vars.OWNER  }}/spender-frontend:latest
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }} # only this needs to be a secret
