@@ -1,0 +1,8 @@
+# Caddyfile
+{$API_DOMAIN} {
+    reverse_proxy api:8080
+}
+
+{$APP_DOMAIN} {
+    reverse_proxy frontend:80
+}

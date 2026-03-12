@@ -1,0 +1,45 @@
+services:
+  caddy:
+    image: caddy:latest
+    restart: always
+    environment:
+      API_DOMAIN: ${API_DOMAIN}
+      APP_DOMAIN: ${APP_DOMAIN}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+    depends_on:
+      - api
+      - frontend
+
+  api:
+    image: ${API_IMAGE} # set in .env, e.g. ghcr.io/yourusername/spender-api:latest
+    restart: always
+    environment:
+      ConnectionStrings__Default: Host=postgres;Database=spender;Username=spender;Password=${DB_PASSWORD}
+      ASPNETCORE_ENVIRONMENT: Production
+    depends_on:
+      - postgres
+
+  frontend:
+    image: ${FRONTEND_IMAGE} # set in .env, e.g. ghcr.io/yourusername/spender-frontend:latest
+    restart: always
+    environment:
+      API_DOMAIN: ${API_DOMAIN}
+      APP_DOMAIN: ${APP_DOMAIN}
+
+  postgres:
+    image: postgres:18
+    restart: always
+    environment:
+      POSTGRES_DB: spender
+      POSTGRES_USER: spender
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - /mnt/ssd/postgres:/var/lib/postgresql/data
+
+volumes:
+  caddy_data:
