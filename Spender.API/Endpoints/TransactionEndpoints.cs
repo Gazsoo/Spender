@@ -7,7 +7,7 @@ public static class TransactionEndpoints
 {
     public static void MapTransactionEndpoints(this WebApplication app)
     {
-        var group = app.MapGroup("/api/transactions").WithTags("Transactions");
+        var group = app.MapGroup("/api/transactions").WithTags("Transactions").RequireAuthorization();
 
         group.MapGet("/", async (ITransactionService service) =>
         {

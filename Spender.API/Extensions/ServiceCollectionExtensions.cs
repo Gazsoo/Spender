@@ -125,7 +125,7 @@ public static class ServiceCollectionExtensions
                 var allowedOrigin = configuration["Cors:AllowedOrigin"];
                 if (string.IsNullOrWhiteSpace(allowedOrigin))
                 {
-                    Console.Error.WriteLine(
+                    Console.Out.WriteLine(
                         "WARNING: Cors:AllowedOrigin is not configured — the 'Frontend' CORS policy will reject all cross-origin requests.");
                     return;
                 }

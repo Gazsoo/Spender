@@ -8,7 +8,7 @@ public static class PeopleEndpoints
 {
     public static void MapPeopleEndpoints(this WebApplication app)
     {
-        var group = app.MapGroup("/api/people").WithTags("People");
+        var group = app.MapGroup("/api/people").WithTags("People").RequireAuthorization();
 
         group.MapGet("/", async (SpenderDbContext db) =>
         {

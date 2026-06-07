@@ -6,7 +6,7 @@ public static class AnalyticsEndpoints
 {
     public static void MapAnalyticsEndpoints(this WebApplication app)
     {
-        var group = app.MapGroup("/api/analytics").WithTags("Analytics");
+        var group = app.MapGroup("/api/analytics").WithTags("Analytics").RequireAuthorization();
 
         group.MapGet("/monthly", async (int? year, int? month, IAnalyticsService service) =>
         {
