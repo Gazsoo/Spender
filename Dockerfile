@@ -10,6 +10,7 @@ COPY Spender.Auth/Spender.Auth.csproj Spender.Auth/
 COPY Spender.Transactions/Spender.Transactions.csproj Spender.Transactions/
 COPY Spender.Categories/Spender.Categories.csproj Spender.Categories/
 COPY Spender.Analytics/Spender.Analytics.csproj Spender.Analytics/
+COPY Spender.Infrastructure/Spender.Infrastructure.csproj Spender.Infrastructure/
 RUN dotnet restore
 
 # Copy everything and build
