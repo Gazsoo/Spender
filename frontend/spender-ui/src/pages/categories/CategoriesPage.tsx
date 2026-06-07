@@ -40,7 +40,7 @@ export default function CategoriesPage() {
           <div className={styles.list}>
             {categories.map(c => (
               <div key={c.id} className={styles.row}>
-                <span className={styles.swatch} style={{ background: c.color }} />
+                <span className={styles.swatch} style={{ background: c.color ?? undefined }} />
                 <span className={styles.name}>{c.name}</span>
                 <span className={styles.color}>{c.color}</span>
                 <div className={styles.actions}>

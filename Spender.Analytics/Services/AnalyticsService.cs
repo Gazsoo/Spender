@@ -29,11 +29,12 @@ public class AnalyticsService : IAnalyticsService
             TotalAmount = transactions.Sum(t => t.Amount),
             TransactionCount = transactions.Count,
             Categories = transactions
-                .GroupBy(t => new { t.CategoryId, t.Category.Name })
+                .GroupBy(t => new { t.CategoryId, t.Category.Name, t.Category.Color })
                 .Select(g => new CategorySummary
                 {
                     CategoryId = g.Key.CategoryId,
                     CategoryName = g.Key.Name,
+                    Color = g.Key.Color,
                     Amount = g.Sum(t => t.Amount),
                     TransactionCount = g.Count()
                 })
@@ -58,11 +59,12 @@ public class AnalyticsService : IAnalyticsService
                 Month = g.Key.Month,
                 TotalAmount = g.Sum(t => t.Amount),
                 TransactionCount = g.Count(),
-                Categories = g.GroupBy(t => new { t.CategoryId, t.Category.Name })
+                Categories = g.GroupBy(t => new { t.CategoryId, t.Category.Name, t.Category.Color })
                              .Select(cg => new CategorySummary
                              {
                                  CategoryId = cg.Key.CategoryId,
                                  CategoryName = cg.Key.Name,
+                                 Color = cg.Key.Color,
                                  Amount = cg.Sum(t => t.Amount),
                                  TransactionCount = cg.Count()
                              })
