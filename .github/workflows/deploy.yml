@@ -37,10 +37,20 @@ jobs:
           push: true
           tags: ghcr.io/${{ vars.OWNER  }}/spender-api:latest
 
+      # Frontend codegen (Orval) needs the OpenAPI spec written by Spender.API.
+      # Generate it here so the frontend image build never needs the .NET SDK.
+      - name: Set up .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Generate OpenAPI spec for frontend codegen
+        run: dotnet build Spender.API/Spender.API.csproj -c Release
+
       - name: Build and push Frontend image
         uses: docker/build-push-action@v5
         with:
-          context: ./frontend/spender-ui
+          context: .
           file: ./frontend/spender-ui/Dockerfile
           platforms: linux/arm64
           push: true
