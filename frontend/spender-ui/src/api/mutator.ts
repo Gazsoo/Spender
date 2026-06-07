@@ -1,7 +1,16 @@
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5020';
 
+export const UNAUTHORIZED_EVENT = 'spender:unauthorized';
+
 export const customFetch = async <T>(url: string, options?: RequestInit): Promise<T> => {
-  const response = await fetch(`${API_BASE}${url}`, options);
+  const response = await fetch(`${API_BASE}${url}`, {
+    credentials: 'include',
+    ...options,
+  });
+
+  if (response.status === 401) {
+    window.dispatchEvent(new Event(UNAUTHORIZED_EVENT));
+  }
 
   if (!response.ok) {
     const text = await response.text().catch(() => '');

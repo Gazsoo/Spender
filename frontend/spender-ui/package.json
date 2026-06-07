@@ -11,6 +11,7 @@
     "generate": "dotnet build ../../Spender.API -c Debug -v quiet && orval"
   },
   "dependencies": {
+    "@react-oauth/google": "^0.13.5",
     "@tanstack/react-query": "^5.94.5",
     "date-fns": "^4.1.0",
     "lucide-react": "^0.577.0",
