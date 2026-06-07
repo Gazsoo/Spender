@@ -1,0 +1,13 @@
+.btn { display: inline-flex; align-items: center; gap: 6px; font-weight: 500; }
+
+.primary  { background: var(--primary); color: #fff; }
+.primary:hover:not(:disabled) { background: var(--primary-hover); }
+
+.ghost { background: transparent; color: var(--text-muted); border: 1px solid var(--border); }
+.ghost:hover:not(:disabled) { background: var(--surface-2); color: var(--text); }
+
+.danger { background: transparent; color: var(--danger); border: 1px solid var(--danger); }
+.danger:hover:not(:disabled) { background: var(--danger); color: #fff; }
+
+.sm { padding: 5px 10px; font-size: 12.5px; }
+.md { padding: 8px 16px; font-size: 14px; }

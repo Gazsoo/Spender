@@ -2,16 +2,29 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Spender.Shared\Spender.Shared.csproj" />
+    <ProjectReference Include="..\Spender.Infrastructure\Spender.Infrastructure.csproj" />
     <ProjectReference Include="..\Spender.Auth\Spender.Auth.csproj" />
     <ProjectReference Include="..\Spender.Transactions\Spender.Transactions.csproj" />
     <ProjectReference Include="..\Spender.Categories\Spender.Categories.csproj" />
     <ProjectReference Include="..\Spender.Analytics\Spender.Analytics.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.23.0" />
+    <PackageReference Include="MediatR" Version="12.4.1" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.0" />
+    <PackageReference Include="Scalar.AspNetCore" Version="2.5.5" />
+  </ItemGroup>
+
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);1591</NoWarn>
+    <UserSecretsId>49994fcd-9019-49d1-bd67-72ff99155fc7</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
 
 </Project>
