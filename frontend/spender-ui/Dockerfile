@@ -10,7 +10,7 @@ ENV VITE_API_URL=$VITE_API_URL
 ARG VITE_GOOGLE_CLIENT_ID
 ENV VITE_GOOGLE_CLIENT_ID=$VITE_GOOGLE_CLIENT_ID
 
-COPY frontend/spender-ui/package.json frontend/spender-ui/pnpm-lock.yaml ./
+COPY frontend/spender-ui/package.json frontend/spender-ui/pnpm-lock.yaml frontend/spender-ui/pnpm-workspace.yaml ./
 RUN npm install -g pnpm && pnpm install
 
 COPY frontend/spender-ui/ ./
