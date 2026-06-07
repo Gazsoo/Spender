@@ -2,8 +2,9 @@
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /app
 
-# Copy solution and restore
-COPY Spender.slnx .
+# Copy project files and restore — scoped to Spender.API so the image build
+# never pulls in Spender.Auth.Tests (and its xUnit/Moq dependencies), which
+# the solution-wide `dotnet restore` would otherwise require in the context.
 COPY Spender.Shared/Spender.Shared.csproj Spender.Shared/
 COPY Spender.API/Spender.API.csproj Spender.API/
 COPY Spender.Auth/Spender.Auth.csproj Spender.Auth/
@@ -11,7 +12,7 @@ COPY Spender.Transactions/Spender.Transactions.csproj Spender.Transactions/
 COPY Spender.Categories/Spender.Categories.csproj Spender.Categories/
 COPY Spender.Analytics/Spender.Analytics.csproj Spender.Analytics/
 COPY Spender.Infrastructure/Spender.Infrastructure.csproj Spender.Infrastructure/
-RUN dotnet restore
+RUN dotnet restore Spender.API/Spender.API.csproj
 
 # Copy everything and build
 COPY . .
