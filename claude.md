@@ -23,7 +23,7 @@ All backend services target .NET 10.0 with nullable reference types and implicit
 Located in `frontend/spender-ui/`:
 - React 19 + Vite + TypeScript
 - React Router v7 for routing, TanStack Query v5 for server state, lucide-react for icons
-- Uses npm (package-lock.json); pnpm-lock.yaml removed
+- Uses pnpm (pnpm-lock.yaml)
 - Fully implemented with pages: dashboard, transactions, categories, analytics, debt
 
 ### Deployment - Containerized Raspberry Pi
@@ -51,16 +51,17 @@ dotnet publish Spender.API -c Release -o /app/publish
 cd frontend/spender-ui
 
 # Install dependencies
-npm install
+pnpm install
 
 # Development server
-npm run dev
+pnpm dev
 
 # Production build
-npm run build
+pnpm build
 
-# Generate TypeScript types from live API
-npm run generate-types        # from http://localhost:5020/openapi/v1.json
+# Generate Orval hooks + types (requires API running on :5020)
+pnpm generate          # regenerates src/api/ from openapi.json
+pnpm generate:fetch    # fetches fresh spec from live API, then generates
 ```
 
 ### Docker Development

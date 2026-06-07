@@ -15,6 +15,7 @@ public static class PeopleEndpoints
             var people = await db.People.OrderBy(p => p.Name).ToListAsync();
             return Results.Ok(people);
         })
+        .WithName("GetPeople")
         .Produces<IEnumerable<Person>>();
     }
 }

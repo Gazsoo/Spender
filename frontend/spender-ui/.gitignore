@@ -22,3 +22,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Generated API client (regenerate with `pnpm generate`, never edit by hand)
+/src/api/generated
+/src/api/model

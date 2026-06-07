@@ -14,6 +14,7 @@ public static class CategoryEndpoints
             var categories = await service.GetAllCategoriesAsync();
             return Results.Ok(categories);
         })
+        .WithName("GetCategories")
         .Produces<IEnumerable<Spender.Shared.Models.Category>>();
 
         group.MapGet("/{id}", async (int id, ICategoryService service) =>
@@ -21,6 +22,7 @@ public static class CategoryEndpoints
             var category = await service.GetCategoryByIdAsync(id);
             return category is not null ? Results.Ok(category) : Results.NotFound();
         })
+        .WithName("GetCategoryById")
         .Produces<Spender.Shared.Models.Category>()
         .Produces(StatusCodes.Status404NotFound);
 
@@ -36,6 +38,7 @@ public static class CategoryEndpoints
                 return Results.BadRequest(ex.Message);
             }
         })
+        .WithName("CreateCategory")
         .Produces<Spender.Shared.Models.Category>(StatusCodes.Status201Created)
         .Produces(StatusCodes.Status400BadRequest);
 
@@ -51,6 +54,7 @@ public static class CategoryEndpoints
                 return Results.BadRequest(ex.Message);
             }
         })
+        .WithName("UpdateCategory")
         .Produces<Spender.Shared.Models.Category>()
         .Produces(StatusCodes.Status400BadRequest);
 
@@ -66,6 +70,7 @@ public static class CategoryEndpoints
                 return Results.BadRequest(ex.Message);
             }
         })
+        .WithName("DeleteCategory")
         .Produces(StatusCodes.Status204NoContent)
         .Produces(StatusCodes.Status404NotFound)
         .Produces(StatusCodes.Status400BadRequest);

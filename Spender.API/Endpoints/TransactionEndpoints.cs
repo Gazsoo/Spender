@@ -14,6 +14,7 @@ public static class TransactionEndpoints
             var transactions = await service.GetAllTransactionsAsync();
             return Results.Ok(transactions);
         })
+        .WithName("GetTransactions")
         .Produces<IEnumerable<Spender.Shared.Models.Transaction>>();
 
         group.MapGet("/{id}", async (int id, ITransactionService service) =>
@@ -21,6 +22,7 @@ public static class TransactionEndpoints
             var transaction = await service.GetTransactionByIdAsync(id);
             return transaction is not null ? Results.Ok(transaction) : Results.NotFound();
         })
+        .WithName("GetTransactionById")
         .Produces<Spender.Shared.Models.Transaction>()
         .Produces(StatusCodes.Status404NotFound);
 
@@ -36,6 +38,7 @@ public static class TransactionEndpoints
                 return Results.BadRequest(ex.Message);
             }
         })
+        .WithName("CreateTransaction")
         .Produces<Spender.Shared.Models.Transaction>(StatusCodes.Status201Created)
         .Produces(StatusCodes.Status400BadRequest);
 
@@ -51,6 +54,7 @@ public static class TransactionEndpoints
                 return Results.BadRequest(ex.Message);
             }
         })
+        .WithName("UpdateTransaction")
         .Produces<Spender.Shared.Models.Transaction>()
         .Produces(StatusCodes.Status400BadRequest);
 
@@ -59,6 +63,7 @@ public static class TransactionEndpoints
             var deleted = await service.DeleteTransactionAsync(id);
             return deleted ? Results.NoContent() : Results.NotFound();
         })
+        .WithName("DeleteTransaction")
         .Produces(StatusCodes.Status204NoContent)
         .Produces(StatusCodes.Status404NotFound);
     }

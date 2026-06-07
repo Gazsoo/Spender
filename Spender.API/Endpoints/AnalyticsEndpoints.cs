@@ -13,6 +13,7 @@ public static class AnalyticsEndpoints
             var summary = await service.GetMonthlySummaryAsync(year, month);
             return Results.Ok(summary);
         })
+        .WithName("GetMonthlyAnalytics")
         .Produces<Spender.Shared.DTOs.MonthlySummary>();
 
         group.MapGet("/yearly", async (int? year, IAnalyticsService service) =>
@@ -20,6 +21,7 @@ public static class AnalyticsEndpoints
             var summaries = await service.GetYearlySummaryAsync(year);
             return Results.Ok(summaries);
         })
+        .WithName("GetYearlyAnalytics")
         .Produces<IEnumerable<Spender.Shared.DTOs.MonthlySummary>>();
 
         group.MapGet("/debt", async (int perspectiveId, DateTime? from, DateTime? to, IAnalyticsService service) =>
@@ -27,6 +29,7 @@ public static class AnalyticsEndpoints
             var summary = await service.GetDebtSummaryAsync(perspectiveId, from, to);
             return Results.Ok(summary);
         })
+        .WithName("GetDebtSummary")
         .Produces<Spender.Shared.DTOs.DebtSummary>()
         .Produces(StatusCodes.Status400BadRequest);
     }

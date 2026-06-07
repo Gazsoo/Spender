@@ -1,24 +1,23 @@
-import { useQuery } from '@tanstack/react-query';
-import { analyticsApi } from '../services/api';
+import {
+  useGetMonthlyAnalytics,
+  useGetYearlyAnalytics,
+  useGetDebtSummary,
+} from '../api/generated/analytics/analytics';
 
 export function useMonthlyAnalytics(year?: number, month?: number) {
-  return useQuery({
-    queryKey: ['analytics', 'monthly', year, month],
-    queryFn: () => analyticsApi.getMonthlySummary(year, month),
-  });
+  const q = useGetMonthlyAnalytics({ year, month });
+  return { ...q, data: q.data?.data };
 }
 
 export function useYearlyAnalytics(year?: number) {
-  return useQuery({
-    queryKey: ['analytics', 'yearly', year],
-    queryFn: () => analyticsApi.getYearlySummary(year),
-  });
+  const q = useGetYearlyAnalytics({ year });
+  return { ...q, data: q.data?.data };
 }
 
 export function useDebtSummary(perspectiveId: number, from?: string, to?: string) {
-  return useQuery({
-    queryKey: ['analytics', 'debt', perspectiveId, from, to],
-    queryFn:  () => analyticsApi.getDebtSummary(perspectiveId, from, to),
-    enabled:  perspectiveId > 0,
-  });
+  const q = useGetDebtSummary(
+    { perspectiveId, ...(from && { from }), ...(to && { to }) },
+    { query: { enabled: perspectiveId > 0 } },
+  );
+  return { ...q, data: q.data?.data };
 }

@@ -6,6 +6,9 @@
 # dotenv files
 .env
 
+# Generated OpenAPI spec (written at build time, consumed by frontend codegen)
+Spender.API/openapi/
+
 # User-specific files
 *.rsuser
 *.suo
@@ -481,3 +484,4 @@ $RECYCLE.BIN/
 # Vim temporary swap files
 *.swp
 .claude/settings.local.json
+.claude/scheduled_tasks.lock

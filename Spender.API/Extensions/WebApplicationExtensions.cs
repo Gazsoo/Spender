@@ -19,9 +19,11 @@ public static class WebApplicationExtensions
             app.MapScalarApiReference();
         }
 
-        // Apply migrations on startup
-        using (var scope = app.Services.CreateScope())
+        // Apply migrations on startup (skipped when no connection string is configured,
+        // e.g. when the OpenAPI document is generated at build time without a running database)
+        if (!string.IsNullOrEmpty(app.Configuration.GetConnectionString("Default")))
         {
+            using var scope = app.Services.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<SpenderDbContext>();
             context.Database.Migrate();
         }

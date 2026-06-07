@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { Transaction, Category, Person } from '../../types';
+import type { Transaction, Category, Person, ExpenseTypeValue } from '../../types';
 import { ExpenseType } from '../../types';
 import Button from '../ui/Button';
 import styles from './Form.module.css';
@@ -9,7 +9,7 @@ interface FormData {
   description: string;
   date: string;
   categoryId: number;
-  expenseType: number;
+  expenseType: ExpenseTypeValue;
   paidById?: number;
   fundedById?: number;
 }
@@ -37,12 +37,12 @@ export default function TransactionForm({ categories, people, initial, onSubmit,
   const [description, setDescription] = useState(initial?.description ?? '');
   const [date, setDate]               = useState(initial?.date ? initial.date.split('T')[0] : today);
   const [categoryId, setCategoryId]   = useState(initial?.categoryId ? String(initial.categoryId) : '');
-  const [expenseType, setExpenseType] = useState<number>(initial?.expenseType ?? ExpenseType.Personal);
+  const [expenseType, setExpenseType] = useState<ExpenseTypeValue>(initial?.expenseType ?? ExpenseType.Personal);
   const [paidById, setPaidById]       = useState(initial?.paidById ? String(initial.paidById) : '');
   const [fundedById, setFundedById]   = useState(initial?.fundedById ? String(initial.fundedById) : '');
   const [error, setError]             = useState('');
 
-  function handleExpenseTypeChange(value: number) {
+  function handleExpenseTypeChange(value: ExpenseTypeValue) {
     setExpenseType(value);
     setPaidById('');
     setFundedById('');
@@ -127,7 +127,7 @@ export default function TransactionForm({ categories, people, initial, onSubmit,
 
       <div className={styles.field}>
         <label>Type</label>
-        <select value={expenseType} onChange={e => handleExpenseTypeChange(Number(e.target.value))}>
+        <select value={expenseType} onChange={e => handleExpenseTypeChange(Number(e.target.value) as ExpenseTypeValue)}>
           {EXPENSE_TYPE_OPTIONS.map(opt => (
             <option key={opt.value} value={opt.value}>{opt.label} — {opt.hint}</option>
           ))}

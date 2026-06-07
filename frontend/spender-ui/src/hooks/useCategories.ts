@@ -1,34 +1,57 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { categoryApi } from '../services/api';
-import type { CreateCategoryRequest, UpdateCategoryRequest } from '../types';
-
-const QUERY_KEY = ['categories'] as const;
+import { useQueryClient } from '@tanstack/react-query';
+import type { MutateOptions } from '@tanstack/react-query';
+import {
+  useGetCategories,
+  useCreateCategory as _useCreateCategory,
+  useUpdateCategory as _useUpdateCategory,
+  useDeleteCategory as _useDeleteCategory,
+  getGetCategoriesQueryKey,
+} from '../api/generated/categories/categories';
+import type { CreateCategoryRequest, UpdateCategoryRequest } from '../api/model';
 
 export function useCategories() {
-  return useQuery({ queryKey: QUERY_KEY, queryFn: categoryApi.getAll });
+  const q = useGetCategories();
+  return { ...q, data: q.data?.data };
 }
 
 export function useCreateCategory() {
   const qc = useQueryClient();
-  return useMutation({
-    mutationFn: (data: CreateCategoryRequest) => categoryApi.create(data),
-    onSuccess: () => qc.invalidateQueries({ queryKey: QUERY_KEY }),
+  const m = _useCreateCategory({
+    mutation: { onSuccess: () => qc.invalidateQueries({ queryKey: getGetCategoriesQueryKey() }) },
   });
+  return {
+    ...m,
+    mutate: (
+      data: CreateCategoryRequest,
+      options?: MutateOptions<Awaited<ReturnType<typeof m.mutateAsync>>, unknown, { data: CreateCategoryRequest }>,
+    ) => m.mutate({ data }, options),
+  };
 }
 
 export function useUpdateCategory() {
   const qc = useQueryClient();
-  return useMutation({
-    mutationFn: ({ id, data }: { id: number; data: UpdateCategoryRequest }) =>
-      categoryApi.update(id, data),
-    onSuccess: () => qc.invalidateQueries({ queryKey: QUERY_KEY }),
+  const m = _useUpdateCategory({
+    mutation: { onSuccess: () => qc.invalidateQueries({ queryKey: getGetCategoriesQueryKey() }) },
   });
+  return {
+    ...m,
+    mutate: (
+      vars: { id: number; data: UpdateCategoryRequest },
+      options?: MutateOptions<Awaited<ReturnType<typeof m.mutateAsync>>, unknown, { id: number; data: UpdateCategoryRequest }>,
+    ) => m.mutate(vars, options),
+  };
 }
 
 export function useDeleteCategory() {
   const qc = useQueryClient();
-  return useMutation({
-    mutationFn: (id: number) => categoryApi.delete(id),
-    onSuccess: () => qc.invalidateQueries({ queryKey: QUERY_KEY }),
+  const m = _useDeleteCategory({
+    mutation: { onSuccess: () => qc.invalidateQueries({ queryKey: getGetCategoriesQueryKey() }) },
   });
+  return {
+    ...m,
+    mutate: (
+      id: number,
+      options?: MutateOptions<Awaited<ReturnType<typeof m.mutateAsync>>, unknown, { id: number }>,
+    ) => m.mutate({ id }, options),
+  };
 }

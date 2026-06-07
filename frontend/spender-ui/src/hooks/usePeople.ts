@@ -1,6 +1,6 @@
-import { useQuery } from '@tanstack/react-query';
-import { personApi } from '../services/api';
+import { useGetPeople } from '../api/generated/people/people';
 
 export function usePeople() {
-  return useQuery({ queryKey: ['people'], queryFn: personApi.getAll });
+  const q = useGetPeople();
+  return { ...q, data: q.data?.data };
 }
