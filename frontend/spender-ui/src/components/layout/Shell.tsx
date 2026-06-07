@@ -1,5 +1,6 @@
-import { NavLink, Outlet } from 'react-router-dom';
-import { LayoutDashboard, ArrowLeftRight, Tag, BarChart2, Scale } from 'lucide-react';
+import { NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { LayoutDashboard, ArrowLeftRight, Tag, BarChart2, Scale, LogOut } from 'lucide-react';
+import { useAuth } from '../../auth/AuthContext';
 import styles from './Shell.module.css';
 
 const nav = [
@@ -11,6 +12,14 @@ const nav = [
 ];
 
 export default function Shell() {
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    await signOut();
+    navigate('/login', { replace: true });
+  };
+
   return (
     <div className={styles.shell}>
       <aside className={styles.sidebar}>
@@ -30,6 +39,16 @@ export default function Shell() {
             </NavLink>
           ))}
         </nav>
+        {user && (
+          <div className={styles.account}>
+            <div className={styles.accountName}>{user.name}</div>
+            <div className={styles.accountEmail}>{user.email}</div>
+            <button className={styles.logout} onClick={handleLogout}>
+              <LogOut size={14} />
+              Log out
+            </button>
+          </div>
+        )}
       </aside>
       <main className={styles.main}>
         <Outlet />

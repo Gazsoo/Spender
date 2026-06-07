@@ -52,3 +52,38 @@
   .sidebar { display: none; }
   .main { padding: 16px; }
 }
+
+.account {
+  margin-top: auto;
+  padding: 16px 20px 0;
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.accountName {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.accountEmail {
+  font-size: 12px;
+  color: var(--text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.logout {
+  margin-top: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 12.5px;
+  padding: 6px 0;
+}
+.logout:hover { color: var(--text); }
