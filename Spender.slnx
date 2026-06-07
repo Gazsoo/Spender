@@ -2,6 +2,7 @@
   <Project Path="Spender.Analytics/Spender.Analytics.csproj" />
   <Project Path="Spender.API/Spender.API.csproj" />
   <Project Path="Spender.Auth/Spender.Auth.csproj" />
+  <Project Path="Spender.Auth.Tests/Spender.Auth.Tests.csproj" />
   <Project Path="Spender.Categories/Spender.Categories.csproj" />
   <Project Path="Spender.Infrastructure/Spender.Infrastructure.csproj" />
   <Project Path="Spender.Shared/Spender.Shared.csproj" />
