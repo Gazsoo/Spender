@@ -1,5 +1,7 @@
 using System.Text.Json.Nodes;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.OpenApi;
+using Spender.Auth;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi;
 using Spender.Infrastructure.Data;
@@ -114,16 +116,52 @@ public static class ServiceCollectionExtensions
             });
         });
 
-        // CORS
+        // CORS — the frontend origin must be named explicitly because
+        // cookies require AllowCredentials(), which is incompatible with AllowAnyOrigin()
         services.AddCors(options =>
         {
-            options.AddPolicy("Development", policy =>
+            options.AddPolicy("Frontend", policy =>
             {
-                policy.AllowAnyOrigin()
+                var allowedOrigin = configuration["Cors:AllowedOrigin"];
+                if (string.IsNullOrWhiteSpace(allowedOrigin))
+                    return;
+
+                policy.WithOrigins(allowedOrigin)
                       .AllowAnyMethod()
-                      .AllowAnyHeader();
+                      .AllowAnyHeader()
+                      .AllowCredentials();
             });
         });
+
+        // Authentication & Authorization — Google sign-in via a server-side cookie session
+        services.Configure<AuthOptions>(configuration.GetSection(AuthOptions.SectionName));
+        services.AddScoped<IGoogleTokenValidator, GoogleTokenValidator>();
+        services.AddScoped<IAuthService, AuthService>();
+
+        services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+            .AddCookie(options =>
+            {
+                options.Cookie.Name = "spender_session";
+                options.Cookie.HttpOnly = true;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                options.Cookie.SameSite = SameSiteMode.Lax;
+                options.ExpireTimeSpan = TimeSpan.FromDays(30);
+                options.SlidingExpiration = true;
+
+                // This is an API: return 401/403 instead of redirecting to a login page
+                options.Events.OnRedirectToLogin = context =>
+                {
+                    context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                    return Task.CompletedTask;
+                };
+                options.Events.OnRedirectToAccessDenied = context =>
+                {
+                    context.Response.StatusCode = StatusCodes.Status403Forbidden;
+                    return Task.CompletedTask;
+                };
+            });
+
+        services.AddAuthorization();
 
         return services;
     }
