@@ -10,14 +10,18 @@ public static class WebApplicationExtensions
     public static WebApplication ConfigureSpenderApp(this WebApplication app)
     {
         // Configure middleware
+        app.UseCors("Frontend");
+
         if (app.Environment.IsDevelopment())
         {
-            app.UseCors("Development");
             // OpenAPI JSON: /openapi/v1.json
             app.MapOpenApi();
             // Scalar UI: /scalar
             app.MapScalarApiReference();
         }
+
+        app.UseAuthentication();
+        app.UseAuthorization();
 
         // Apply migrations on startup (skipped when no connection string is configured,
         // e.g. when the OpenAPI document is generated at build time without a running database)
@@ -30,6 +34,7 @@ public static class WebApplicationExtensions
 
         // Map endpoints
         app.MapGet("/", () => "Spender API v1.0");
+        app.MapAuthEndpoints();
         app.MapTransactionEndpoints();
         app.MapCategoryEndpoints();
         app.MapAnalyticsEndpoints();
