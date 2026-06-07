@@ -24,6 +24,9 @@ services:
     environment:
       ConnectionStrings__Default: Host=postgres;Database=spender;Username=spender;Password=${DB_PASSWORD}
       ASPNETCORE_ENVIRONMENT: Production
+      GoogleAuth__ClientId: ${GOOGLE_CLIENT_ID}
+      GoogleAuth__AllowedEmails: ${GOOGLE_ALLOWED_EMAILS}
+      Cors__AllowedOrigin: https://${APP_DOMAIN}
     depends_on:
       - postgres
 

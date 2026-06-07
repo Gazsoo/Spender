@@ -47,6 +47,7 @@ jobs:
           tags: ghcr.io/${{ vars.OWNER  }}/spender-frontend:latest
           build-args: |
             VITE_API_URL=${{ vars.VITE_API_URL }}
+            VITE_GOOGLE_CLIENT_ID=${{ vars.VITE_GOOGLE_CLIENT_ID }}
 
       - name: Copy files to Pi
         uses: appleboy/scp-action@v1
@@ -66,7 +67,7 @@ jobs:
           host: ${{ secrets.HOST }} # your cloudflare tunnel or local IP
           username: ${{ secrets.USER }} # pi or your username
           key: ${{ secrets.SSH_KEY }} # private SSH key
-          envs: API_DOMAIN,APP_DOMAIN,API_IMAGE,FRONTEND_IMAGE,DB_PASSWORD
+          envs: API_DOMAIN,APP_DOMAIN,API_IMAGE,FRONTEND_IMAGE,DB_PASSWORD,GOOGLE_CLIENT_ID,GOOGLE_ALLOWED_EMAILS
           script: |
             cd ~/spender
             docker compose pull
@@ -78,3 +79,5 @@ jobs:
           API_IMAGE: ghcr.io/${{ vars.OWNER  }}/spender-api:latest
           FRONTEND_IMAGE: ghcr.io/${{ vars.OWNER  }}/spender-frontend:latest
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }} # only this needs to be a secret
+          GOOGLE_CLIENT_ID: ${{ vars.GOOGLE_CLIENT_ID }} # not secret — it ends up in the public frontend bundle anyway
+          GOOGLE_ALLOWED_EMAILS: ${{ secrets.GOOGLE_ALLOWED_EMAILS }}
