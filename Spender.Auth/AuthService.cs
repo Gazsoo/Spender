@@ -19,13 +19,7 @@ public class AuthService : IAuthService
         if (payload is null)
             return AuthResult.Failure(AuthFailureReason.InvalidToken);
 
-        var allowedEmails = _options.AllowedEmails
-            .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-
-        var isAllowed = allowedEmails.Any(email =>
-            string.Equals(email, payload.Email, StringComparison.OrdinalIgnoreCase));
-
-        if (!isAllowed)
+        if (!_options.AllowedEmailSet.Contains(payload.Email))
             return AuthResult.Failure(AuthFailureReason.EmailNotAllowed);
 
         return AuthResult.Success(new AuthenticatedUser(payload.Email, payload.Name));

@@ -13,4 +13,15 @@ public class AuthOptions
     /// DB_PASSWORD/API_DOMAIN are configured elsewhere in this project.
     /// </summary>
     public string AllowedEmails { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Pre-parsed, case-insensitive set of allowed emails, computed once
+    /// from <see cref="AllowedEmails"/> and cached for fast lookups.
+    /// </summary>
+    public IReadOnlySet<string> AllowedEmailSet =>
+        _allowedEmailSet ??= AllowedEmails
+            .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+    private IReadOnlySet<string>? _allowedEmailSet;
 }
