@@ -57,7 +57,7 @@ jobs:
           tags: ghcr.io/${{ vars.OWNER  }}/spender-frontend:latest
           build-args: |
             VITE_API_URL=${{ vars.VITE_API_URL }}
-            VITE_GOOGLE_CLIENT_ID=${{ vars.VITE_GOOGLE_CLIENT_ID }}
+            VITE_GOOGLE_CLIENT_ID=${{ vars.GOOGLE_CLIENT_ID }}
 
       - name: Copy files to Pi
         uses: appleboy/scp-action@v1
