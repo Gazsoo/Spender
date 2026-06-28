@@ -36,6 +36,8 @@ jobs:
           platforms: linux/arm64 # Pi architecture ✅
           push: true
           tags: ghcr.io/${{ vars.OWNER  }}/spender-api:latest
+          cache-from: type=gha,scope=api
+          cache-to: type=gha,mode=max,scope=api
 
       - name: Build and push Sensor image
         uses: docker/build-push-action@v5
@@ -45,6 +47,8 @@ jobs:
           platforms: linux/arm64
           push: true
           tags: ghcr.io/${{ vars.OWNER  }}/spender-sensor:latest
+          cache-from: type=gha,scope=sensor
+          cache-to: type=gha,mode=max,scope=sensor
 
       # Frontend codegen (Orval) needs the OpenAPI spec written by Spender.API.
       # Generate it here so the frontend image build never needs the .NET SDK.
@@ -67,6 +71,8 @@ jobs:
           build-args: |
             VITE_API_URL=${{ vars.VITE_API_URL }}
             VITE_GOOGLE_CLIENT_ID=${{ vars.GOOGLE_CLIENT_ID }}
+          cache-from: type=gha,scope=frontend
+          cache-to: type=gha,mode=max,scope=frontend
 
       - name: Copy files to Pi
         uses: appleboy/scp-action@v1
