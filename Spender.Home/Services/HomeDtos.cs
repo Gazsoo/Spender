@@ -21,12 +21,14 @@ public record SensorDto(
     decimal Pressure,
     decimal DewPoint,
     decimal FeelsLike,
+    decimal FeelsLikeHeatIndex,
     DateTime RecordedAt
 );
 
 public record HungaroMetDto(
     decimal Temperature,
     decimal FeelsLike,
+    decimal FeelsLikeHeatIndex,
     decimal Humidity,
     decimal Pressure,
     decimal WindSpeed,

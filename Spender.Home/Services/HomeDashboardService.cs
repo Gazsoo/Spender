@@ -33,12 +33,16 @@ public class HomeDashboardService : IHomeDashboardService
             Pressure: latestSensor.Pressure,
             DewPoint: latestSensor.DewPoint,
             FeelsLike: latestSensor.FeelsLike,
+            FeelsLikeHeatIndex: (decimal)SensorMath.FeelsLikeHeatIndex(
+                (double)latestSensor.TemperatureCompensated, (double)latestSensor.Humidity),
             RecordedAt: latestSensor.RecordedAt
         );
 
         HungaroMetDto? hm = latestHm is null ? null : new HungaroMetDto(
             Temperature: latestHm.Temperature,
             FeelsLike: latestHm.FeelsLike,
+            FeelsLikeHeatIndex: (decimal)SensorMath.FeelsLikeHeatIndex(
+                (double)latestHm.Temperature, (double)latestHm.Humidity),
             Humidity: latestHm.Humidity,
             Pressure: latestHm.Pressure,
             WindSpeed: latestHm.WindSpeed,

@@ -104,6 +104,7 @@ public class HungaroMetParser
         return new HungaroMetDto(
             Temperature: (decimal)t.Value,
             FeelsLike: (decimal)feelsLike,
+            FeelsLikeHeatIndex: (decimal)SensorMath.FeelsLikeHeatIndex(t.Value, u.Value),
             Humidity: (decimal)u.Value,
             Pressure: (decimal)p.Value,
             WindSpeed: (decimal)(fs ?? 0),

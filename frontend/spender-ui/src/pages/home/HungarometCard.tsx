@@ -36,7 +36,8 @@ export default function HungarometCard({ data }: { data: HungaroMetDto | null | 
       <p className="font-display font-bold text-sm text-gray-900 tracking-tight mb-0.5">HungaroMet</p>
       <p className="text-xs text-gray-400 mb-4">Lágymányos</p>
       <Row label="Temperature" value={`${data.temperature.toFixed(1)}°C`} />
-      <Row label="Feels like" value={`${data.feelsLike.toFixed(1)}°C`} />
+      <Row label="Feels like (BOM)" value={`${data.feelsLike.toFixed(1)}°C`} />
+      <Row label="Feels like (HI)" value={`${data.feelsLikeHeatIndex.toFixed(1)}°C`} />
       <Row label="Humidity" value={`${data.humidity.toFixed(0)}%`} />
       <Row label="Pressure" value={`${data.pressure.toFixed(0)} hPa`} />
       <Row label="Wind" value={`${data.windSpeed.toFixed(1)} m/s ${windDir(data.windDirection)}`} />
