@@ -1,7 +1,7 @@
 # frontend/spender-ui/Dockerfile
 # Built from the repo root so the OpenAPI spec generated alongside Spender.API
 # is available for Orval codegen — see orval.config.ts (`../../Spender.API/openapi/...`).
-FROM node:22-alpine AS build
+FROM --platform=$BUILDPLATFORM node:22-alpine AS build
 WORKDIR /repo/frontend/spender-ui
 
 # declare build args
