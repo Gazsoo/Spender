@@ -8,6 +8,7 @@ import TransactionsPage from './pages/transactions/TransactionsPage';
 import CategoriesPage from './pages/categories/CategoriesPage';
 import AnalyticsPage from './pages/analytics/AnalyticsPage';
 import DebtPage from './pages/debt/DebtPage';
+import HomePage from './pages/home/HomePage';
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || '';
 
@@ -40,6 +41,7 @@ export default function App() {
                 <Route path="/categories" element={<CategoriesPage />} />
                 <Route path="/analytics" element={<AnalyticsPage />} />
                 <Route path="/debt"      element={<DebtPage />} />
+                <Route path="/home"     element={<HomePage />} />
               </Route>
             </Route>
           </Routes>

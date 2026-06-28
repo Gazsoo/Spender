@@ -1,5 +1,5 @@
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, ArrowLeftRight, Tag, BarChart2, Scale, LogOut } from 'lucide-react';
+import { LayoutDashboard, ArrowLeftRight, Tag, BarChart2, Scale, Home, LogOut } from 'lucide-react';
 import { useAuth } from '../../auth/AuthContext';
 
 const nav = [
@@ -8,6 +8,7 @@ const nav = [
   { to: '/categories',   label: 'Categories',   icon: Tag             },
   { to: '/analytics',    label: 'Analytics',    icon: BarChart2       },
   { to: '/debt',         label: 'Debt',         icon: Scale           },
+  { to: '/home',         label: 'Home',         icon: Home            },
 ];
 
 export default function Shell() {
