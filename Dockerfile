@@ -17,7 +17,7 @@ RUN dotnet restore Spender.API/Spender.API.csproj
 
 # Copy everything and build
 COPY . .
-RUN dotnet publish Spender.API -c Release -o /app/publish
+RUN dotnet publish Spender.API -c Release --no-restore -o /app/publish
 
 # Runtime stage
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime

@@ -1,27 +1,39 @@
 import { useHome } from '../../hooks/useHome';
-import SensorCard from './SensorCard';
-import HungarometCard from './HungarometCard';
-import OpenMeteoCard from './OpenMeteoCard';
+import HeroReading from './HeroReading';
+import ConsensusPanel from './ConsensusPanel';
+import WindowAdvice from './WindowAdvice';
 import ForecastStrip from './ForecastStrip';
+import StationCard from './StationCard';
+import ModelCard from './ModelCard';
 
 export default function HomePage() {
   const { data, isError } = useHome();
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="mx-auto flex max-w-5xl flex-col gap-4">
       {isError && (
-        <div className="text-xs text-amber-600 bg-amber-50 border border-amber-200 rounded-xl px-4 py-2">
-          Connection lost — showing last known data.
+        <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-2 text-xs text-amber-600">
+          Connection lost — showing the last reading we have.
         </div>
       )}
 
-      <div className="grid grid-cols-3 gap-4">
-        <SensorCard sensor={data?.sensor} />
-        <HungarometCard data={data?.hungaromet} />
-        <OpenMeteoCard data={data?.openMeteo} />
+      <div className="grid gap-4 lg:grid-cols-12">
+        <div className="lg:col-span-7">
+          <HeroReading sensor={data?.sensor} />
+        </div>
+        <div className="lg:col-span-5">
+          <ConsensusPanel data={data} />
+        </div>
       </div>
 
+      <WindowAdvice data={data} />
+
       <ForecastStrip forecast={data?.openMeteo?.forecast} />
+
+      <div className="grid gap-4 sm:grid-cols-2">
+        <StationCard data={data?.hungaromet} />
+        <ModelCard data={data?.openMeteo} />
+      </div>
     </div>
   );
 }
