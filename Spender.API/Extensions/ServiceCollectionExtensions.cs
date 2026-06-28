@@ -10,6 +10,8 @@ using Spender.Categories.Services;
 using Spender.Analytics.Services;
 using Spender.Analytics.EventHandlers;
 using Spender.Home;
+using Spender.Home.Background;
+using Spender.Home.Parsers;
 using Spender.Home.Services;
 
 namespace Spender.API.Extensions;
@@ -30,6 +32,10 @@ public static class ServiceCollectionExtensions
         services.AddScoped<Spender.Categories.Services.ICategoryService, Spender.Categories.Services.CategoryService>();
         services.AddScoped<Spender.Analytics.Services.IAnalyticsService, Spender.Analytics.Services.AnalyticsService>();
         services.AddScoped<ISensorIngestService, SensorIngestService>();
+        services.AddScoped<IHomeDashboardService, HomeDashboardService>();
+        services.AddHttpClient<HungaroMetParser>();
+        services.AddHttpClient<OpenMeteoClient>();
+        services.AddHostedService<WeatherBackgroundService>();
 
         // Home options
         services.Configure<HomeOptions>(configuration.GetSection(HomeOptions.SectionName));
