@@ -49,6 +49,7 @@ services:
     restart: unless-stopped
     devices:
       - "/dev/i2c-1:/dev/i2c-1"
+      - "/dev/fb0:/dev/fb0"
     environment:
       API_URL: http://api:5020
       POLL_INTERVAL_SECONDS: "30"
