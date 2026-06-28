@@ -12,6 +12,7 @@ COPY Spender.Transactions/Spender.Transactions.csproj Spender.Transactions/
 COPY Spender.Categories/Spender.Categories.csproj Spender.Categories/
 COPY Spender.Analytics/Spender.Analytics.csproj Spender.Analytics/
 COPY Spender.Infrastructure/Spender.Infrastructure.csproj Spender.Infrastructure/
+COPY Spender.Home/Spender.Home.csproj Spender.Home/
 RUN dotnet restore Spender.API/Spender.API.csproj
 
 # Copy everything and build
