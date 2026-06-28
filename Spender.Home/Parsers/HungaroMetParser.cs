@@ -2,33 +2,21 @@
 using System.Globalization;
 using System.IO.Compression;
 using System.Text;
-using System.Text.RegularExpressions;
 using Spender.Home.Services;
 
 namespace Spender.Home.Parsers;
 
 public class HungaroMetParser
 {
-    private const string BaseUrl = "https://odp.met.hu/weather/weather_reports/synoptic/hungary/10_minutes/";
+    private const string BaseUrl = "https://odp.met.hu/weather/weather_reports/synoptic/hungary/10_minutes/csv/";
     private readonly HttpClient _http;
 
     public HungaroMetParser(HttpClient http) => _http = http;
 
     public async Task<HungaroMetDto?> FetchLatestAsync(string stationId, CancellationToken ct = default)
     {
-        // Files are named HABP_10M_SYNOP_<YYYYMMDDHHmmSS>.csv.zip — find the latest one
-        var index = await _http.GetStringAsync(BaseUrl, ct);
-        var matches = Regex.Matches(index, @"href=""(HABP_10M_SYNOP_\d{14}\.csv\.zip)""");
-        if (matches.Count == 0) return null;
-
-        var latest = matches.Cast<Match>()
-            .Select(m => m.Groups[1].Value)
-            .OrderDescending()
-            .First();
-
-        var zipBytes = await _http.GetByteArrayAsync(BaseUrl + latest, ct);
+        var zipBytes = await _http.GetByteArrayAsync(BaseUrl + "HABP_10M_SYNOP_LATEST.csv.zip", ct);
         var csv = ExtractCsvFromZip(zipBytes);
-
         return ParseCsv(csv, stationId);
     }
 

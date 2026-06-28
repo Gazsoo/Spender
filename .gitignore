@@ -6,6 +6,8 @@
 # dotenv files
 .env
 
+.venv
+
 # Generated OpenAPI spec (written at build time, consumed by frontend codegen)
 Spender.API/openapi/
 
