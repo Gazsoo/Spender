@@ -37,6 +37,15 @@ jobs:
           push: true
           tags: ghcr.io/${{ vars.OWNER  }}/spender-api:latest
 
+      - name: Build and push Sensor image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./sensor
+          file: ./sensor/Dockerfile
+          platforms: linux/arm64
+          push: true
+          tags: ghcr.io/${{ vars.OWNER  }}/spender-sensor:latest
+
       # Frontend codegen (Orval) needs the OpenAPI spec written by Spender.API.
       # Generate it here so the frontend image build never needs the .NET SDK.
       - name: Set up .NET SDK
@@ -77,7 +86,7 @@ jobs:
           host: ${{ secrets.HOST }} # your cloudflare tunnel or local IP
           username: ${{ secrets.USER }} # pi or your username
           key: ${{ secrets.SSH_KEY }} # private SSH key
-          envs: API_DOMAIN,APP_DOMAIN,API_IMAGE,FRONTEND_IMAGE,DB_PASSWORD,GOOGLE_CLIENT_ID,GOOGLE_ALLOWED_EMAILS
+          envs: API_DOMAIN,APP_DOMAIN,API_IMAGE,FRONTEND_IMAGE,SENSOR_IMAGE,DB_PASSWORD,GOOGLE_CLIENT_ID,GOOGLE_ALLOWED_EMAILS
           script: |
             cd ~/spender
             docker compose pull
@@ -88,6 +97,7 @@ jobs:
           APP_DOMAIN: ${{ vars.APP_DOMAIN }}
           API_IMAGE: ghcr.io/${{ vars.OWNER  }}/spender-api:latest
           FRONTEND_IMAGE: ghcr.io/${{ vars.OWNER  }}/spender-frontend:latest
+          SENSOR_IMAGE: ghcr.io/${{ vars.OWNER  }}/spender-sensor:latest
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }} # only this needs to be a secret
           GOOGLE_CLIENT_ID: ${{ vars.GOOGLE_CLIENT_ID }} # not secret — it ends up in the public frontend bundle anyway
           GOOGLE_ALLOWED_EMAILS: ${{ secrets.GOOGLE_ALLOWED_EMAILS }}

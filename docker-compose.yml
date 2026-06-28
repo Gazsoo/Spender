@@ -27,6 +27,11 @@ services:
       GoogleAuth__ClientId: ${GOOGLE_CLIENT_ID}
       GoogleAuth__AllowedEmails: ${GOOGLE_ALLOWED_EMAILS}
       Cors__AllowedOrigin: https://${APP_DOMAIN}
+      Home__HungaroMetStationId: "44505"
+      Home__Lat: "47.4719"
+      Home__Lon: "19.0519"
+      Home__WeatherPollIntervalMinutes: "10"
+      Home__CpuCompensationFactor: "0.5"
     depends_on:
       - postgres
 
@@ -36,6 +41,20 @@ services:
     environment:
       API_DOMAIN: ${API_DOMAIN}
       APP_DOMAIN: ${APP_DOMAIN}
+
+  sensor:
+    image: ${SENSOR_IMAGE:-spender-sensor}
+    build:
+      context: ./sensor
+    restart: unless-stopped
+    devices:
+      - "/dev/i2c-1:/dev/i2c-1"
+    environment:
+      API_URL: http://api:5020
+      POLL_INTERVAL_SECONDS: "30"
+      SENSOR_BACKEND: sensehat
+    depends_on:
+      - api
 
   postgres:
     image: postgres:18
