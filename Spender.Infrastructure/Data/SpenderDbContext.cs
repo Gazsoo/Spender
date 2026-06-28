@@ -13,7 +13,7 @@ public class SpenderDbContext : DbContext
     public DbSet<Transaction> Transactions { get; set; }
     public DbSet<Person> People { get; set; }
     public DbSet<SensorReading> SensorReadings { get; set; }
-    public DbSet<WeatherCache> WeatherCache { get; set; }
+    public DbSet<WeatherReading> WeatherReadings { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -73,11 +73,18 @@ public class SpenderDbContext : DbContext
             entity.HasIndex(e => e.RecordedAt);
         });
 
-        modelBuilder.Entity<WeatherCache>(entity =>
+        modelBuilder.Entity<WeatherReading>(entity =>
         {
-            entity.HasKey(e => e.Source);
-            entity.Property(e => e.Source).HasMaxLength(20);
-            entity.Property(e => e.Payload).HasColumnType("text");
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Source).IsRequired().HasMaxLength(20);
+            entity.Property(e => e.Temperature).HasPrecision(6, 2);
+            entity.Property(e => e.FeelsLike).HasPrecision(6, 2);
+            entity.Property(e => e.Humidity).HasPrecision(6, 2);
+            entity.Property(e => e.Pressure).HasPrecision(8, 2);
+            entity.Property(e => e.WindSpeed).HasPrecision(6, 2);
+            entity.Property(e => e.StationName).HasMaxLength(100);
+            entity.Property(e => e.ForecastJson).HasColumnType("text");
+            entity.HasIndex(e => new { e.Source, e.FetchedAt });
         });
     }
 }
