@@ -1,125 +1,193 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, TrendingUp, ArrowLeftRight, Tag } from 'lucide-react';
-import { useTransactions } from '../../hooks/useTransactions';
+import { ArrowRight, Check } from 'lucide-react';
+import { useTransactions, useCreateTransaction } from '../../hooks/useTransactions';
 import { useCategories } from '../../hooks/useCategories';
 import { useMonthlyAnalytics } from '../../hooks/useAnalytics';
-import Card from '../../components/ui/Card';
-import PageHeader from '../../components/ui/PageHeader';
 import { formatCurrency, formatDate, MONTH_NAMES } from '../../utils/format';
-import styles from './DashboardPage.module.css';
+import type { Category } from '../../api/model';
 
 const now = new Date();
 
-export default function DashboardPage() {
-  const { data: transactions = [] }   = useTransactions();
-  const { data: categories = [] }     = useCategories();
-  const { data: monthly }             = useMonthlyAnalytics(now.getFullYear(), now.getMonth() + 1);
+const inputCls = 'w-full text-sm bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-gray-900 outline-none focus:border-amber-500 transition-colors';
 
-  const recent = transactions.slice(0, 5);
+function QuickAdd({ categories, onSuccess }: { categories: Category[]; onSuccess: () => void }) {
+  const createMutation = useCreateTransaction();
+  const [amount,      setAmount]      = useState('');
+  const [description, setDescription] = useState('');
+  const [categoryId,  setCategoryId]  = useState('');
+  const [done,        setDone]        = useState(false);
+  const [error,       setError]       = useState('');
+
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!amount || !description || !categoryId) { setError('Fill in all fields.'); return; }
+    if (Number(amount) <= 0) { setError('Amount must be greater than 0.'); return; }
+    setError('');
+    createMutation.mutate(
+      { amount: Number(amount), description, date: new Date().toISOString(), categoryId: Number(categoryId), expenseType: 0 },
+      {
+        onSuccess: () => {
+          setAmount('');
+          setDescription('');
+          setCategoryId('');
+          setDone(true);
+          setTimeout(() => setDone(false), 1500);
+          onSuccess();
+        },
+      },
+    );
+  }
 
   return (
-    <div>
-      <PageHeader
-        title={`${MONTH_NAMES[now.getMonth()]} ${now.getFullYear()}`}
-        subtitle="Here's your spending overview"
+    <form onSubmit={handleSubmit} className="flex flex-col gap-3 flex-1">
+      <div className="flex items-baseline gap-1 border-b border-gray-100 pb-3">
+        <span className="text-4xl font-display font-black text-gray-200">£</span>
+        <input
+          type="number"
+          step="0.01"
+          placeholder="0.00"
+          value={amount}
+          onChange={e => setAmount(e.target.value)}
+          className="flex-1 text-4xl font-display font-black bg-transparent outline-none text-gray-900 placeholder-gray-200 w-0"
+        />
+      </div>
+      <input
+        type="text"
+        placeholder="What was it for?"
+        value={description}
+        onChange={e => setDescription(e.target.value)}
+        className={inputCls}
       />
+      <select value={categoryId} onChange={e => setCategoryId(e.target.value)} className={inputCls}>
+        <option value="">Category…</option>
+        {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+      </select>
+      {error && <p className="text-red-500 text-xs">{error}</p>}
+      <button
+        type="submit"
+        disabled={createMutation.isPending}
+        className="mt-auto flex items-center justify-center gap-2 bg-amber-500 hover:bg-amber-600 disabled:opacity-50 text-white font-display font-bold rounded-xl py-3 text-sm transition-colors cursor-pointer"
+      >
+        {done ? <><Check size={14} /> Added</> : createMutation.isPending ? 'Adding…' : 'Add spending'}
+      </button>
+    </form>
+  );
+}
 
-      {/* Summary cards */}
-      <div className={styles.stats}>
-        <Card className={styles.stat}>
-          <div className={styles.statIcon} style={{ background: 'rgba(99,102,241,0.15)' }}>
-            <TrendingUp size={18} color="var(--primary)" />
-          </div>
-          <div>
-            <div className={styles.statValue}>{formatCurrency(monthly?.totalAmount ?? 0)}</div>
-            <div className={styles.statLabel}>Spent this month</div>
-          </div>
-        </Card>
+export default function DashboardPage() {
+  const { data: transactions = [] } = useTransactions();
+  const { data: categories = [] }   = useCategories();
+  const { data: monthly }           = useMonthlyAnalytics(now.getFullYear(), now.getMonth() + 1);
 
-        <Card className={styles.stat}>
-          <div className={styles.statIcon} style={{ background: 'rgba(34,197,94,0.12)' }}>
-            <ArrowLeftRight size={18} color="var(--success)" />
-          </div>
-          <div>
-            <div className={styles.statValue}>{monthly?.transactionCount ?? 0}</div>
-            <div className={styles.statLabel}>Transactions this month</div>
-          </div>
-        </Card>
+  const recent   = transactions.slice(0, 6);
+  const total    = monthly?.totalAmount ?? 0;
+  const txCount  = monthly?.transactionCount ?? 0;
 
-        <Card className={styles.stat}>
-          <div className={styles.statIcon} style={{ background: 'rgba(251,191,36,0.12)' }}>
-            <Tag size={18} color="#fbbf24" />
-          </div>
-          <div>
-            <div className={styles.statValue}>{categories.length}</div>
-            <div className={styles.statLabel}>Categories</div>
-          </div>
-        </Card>
+  const formattedTotal = formatCurrency(total);
+  const currencySymbol = formattedTotal[0];
+  const numericPart    = formattedTotal.slice(1);
+
+  return (
+    <div className="grid grid-cols-3 gap-4" style={{ gridTemplateRows: 'auto auto auto' }}>
+
+      {/* ── HERO — 2 cols × 2 rows, dark card with clipping number ── */}
+      <div
+        className="rounded-2xl p-7 relative overflow-hidden flex flex-col col-span-2 row-span-2"
+        style={{ background: '#111827', minHeight: 280 }}
+      >
+        <p className="font-display font-semibold text-[11px] uppercase tracking-[0.1em] text-white/40">
+          {MONTH_NAMES[now.getMonth()]} {now.getFullYear()}
+        </p>
+        <p className="text-[13px] text-white/50 mt-1.5">Total spent</p>
+
+        {txCount > 0 && (
+          <p className="text-xs text-white/35 mt-auto mb-1">
+            {txCount} transaction{txCount !== 1 ? 's' : ''} · avg {formatCurrency(total / txCount)}
+          </p>
+        )}
+
+        {/* Signature: massive number bleeds off card bottom */}
+        <div
+          className="font-display font-black text-white tracking-[-0.04em] leading-none absolute left-7 right-7 select-none"
+          style={{ fontSize: 'clamp(72px, 10vw, 116px)', bottom: -10, fontVariantNumeric: 'tabular-nums' }}
+        >
+          <span style={{ color: '#F59E0B' }}>{currencySymbol}</span>{numericPart}
+        </div>
       </div>
 
-      <div className={styles.grid}>
-        {/* Recent transactions */}
-        <Card>
-          <div className={styles.cardHeader}>
-            <h2 className={styles.cardTitle}>Recent transactions</h2>
-            <Link to="/transactions" className={styles.cardLink}>
-              View all <ArrowRight size={13} />
-            </Link>
-          </div>
-          {recent.length === 0 ? (
-            <p className={styles.empty}>No transactions yet.</p>
-          ) : (
-            <div className={styles.list}>
-              {recent.map(t => (
-                <div key={t.id} className={styles.row}>
-                  <div
-                    className={styles.dot}
-                    style={{ background: t.category?.color ?? '#6366f1' }}
-                  />
-                  <div className={styles.rowMain}>
-                    <span className={styles.rowDesc}>{t.description}</span>
-                    <span className={styles.rowMeta}>{t.category?.name} · {formatDate(t.date)}</span>
+      {/* ── QUICK ADD — col 3, rows 1–2 ── */}
+      <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm flex flex-col col-start-3 row-span-2">
+        <p className="font-display font-semibold text-[11px] uppercase tracking-[0.1em] text-gray-400 mb-5">
+          Quick add
+        </p>
+        <QuickAdd categories={categories} onSuccess={() => {}} />
+      </div>
+
+      {/* ── TOP CATEGORIES — col 1, row 3 ── */}
+      <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm col-start-1 row-start-3">
+        <div className="flex items-center justify-between mb-5">
+          <span className="font-display font-bold text-sm text-gray-900 tracking-tight">Top categories</span>
+          <Link to="/analytics" className="flex items-center gap-1 text-xs text-gray-400 hover:text-gray-700 transition-colors">
+            Analytics <ArrowRight size={11} />
+          </Link>
+        </div>
+        {!monthly || monthly.categories.length === 0 ? (
+          <p className="text-sm text-gray-400">No data yet.</p>
+        ) : (
+          <div className="flex flex-col gap-4">
+            {monthly.categories.slice(0, 5).map(c => {
+              const pct = total > 0 ? Math.round((c.amount / total) * 100) : 0;
+              return (
+                <div key={c.categoryId} className="flex flex-col gap-1.5">
+                  <div className="flex justify-between text-sm text-gray-900">
+                    <span>{c.categoryName}</span>
+                    <span className="text-gray-500">{formatCurrency(c.amount)}</span>
                   </div>
-                  <span className={styles.rowAmount}>{formatCurrency(t.amount)}</span>
+                  <div className="h-1 bg-gray-100 rounded-full overflow-hidden">
+                    <div
+                      className="h-full rounded-full transition-all duration-500"
+                      style={{ width: `${pct}%`, background: c.color ?? '#F59E0B' }}
+                    />
+                  </div>
                 </div>
-              ))}
-            </div>
-          )}
-        </Card>
-
-        {/* Top categories this month */}
-        <Card>
-          <div className={styles.cardHeader}>
-            <h2 className={styles.cardTitle}>Top categories</h2>
-            <Link to="/analytics" className={styles.cardLink}>
-              Analytics <ArrowRight size={13} />
-            </Link>
+              );
+            })}
           </div>
-          {!monthly || monthly.categories.length === 0 ? (
-            <p className={styles.empty}>No data for this month.</p>
-          ) : (
-            <div className={styles.categories}>
-              {monthly.categories.slice(0, 5).map(c => {
-                const pct = monthly.totalAmount > 0
-                  ? Math.round((c.amount / monthly.totalAmount) * 100)
-                  : 0;
-                return (
-                  <div key={c.categoryId} className={styles.catRow}>
-                    <div className={styles.catLabel}>
-                      <span>{c.categoryName}</span>
-                      <span className={styles.textMuted}>{pct}%</span>
-                    </div>
-                    <div className={styles.bar}>
-                      <div className={styles.barFill} style={{ width: `${pct}%`, background: 'var(--primary)' }} />
-                    </div>
-                    <span className={styles.catAmount}>{formatCurrency(c.amount)}</span>
-                  </div>
-                );
-              })}
-            </div>
-          )}
-        </Card>
+        )}
       </div>
+
+      {/* ── RECENT TRANSACTIONS — col 2–3, row 3 ── */}
+      <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm col-start-2 col-span-2 row-start-3">
+        <div className="flex items-center justify-between mb-5">
+          <span className="font-display font-bold text-sm text-gray-900 tracking-tight">Recent</span>
+          <Link to="/transactions" className="flex items-center gap-1 text-xs text-gray-400 hover:text-gray-700 transition-colors">
+            View all <ArrowRight size={11} />
+          </Link>
+        </div>
+        {recent.length === 0 ? (
+          <p className="text-sm text-gray-400">No transactions yet.</p>
+        ) : (
+          <div className="flex flex-col">
+            {recent.map(t => (
+              <div key={t.id} className="flex items-center gap-3 py-2.5 border-b border-gray-100 last:border-0">
+                <div
+                  className="w-2 h-2 rounded-full shrink-0"
+                  style={{ background: t.category?.color ?? '#F59E0B' }}
+                />
+                <div className="flex-1 min-w-0">
+                  <span className="block text-sm text-gray-900 truncate">{t.description}</span>
+                  <span className="text-xs text-gray-400">{t.category?.name} · {formatDate(t.date)}</span>
+                </div>
+                <span className="text-sm font-medium tabular-nums text-gray-900 whitespace-nowrap">
+                  {formatCurrency(t.amount)}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
     </div>
   );
 }

@@ -1,6 +1,5 @@
 import { useEffect, type ReactNode } from 'react';
 import { X } from 'lucide-react';
-import styles from './Modal.module.css';
 
 interface ModalProps {
   title: string;
@@ -16,15 +15,25 @@ export default function Modal({ title, onClose, children }: ModalProps) {
   }, [onClose]);
 
   return (
-    <div className={styles.backdrop} onClick={onClose}>
-      <div className={styles.panel} onClick={e => e.stopPropagation()}>
-        <div className={styles.header}>
-          <h2 className={styles.title}>{title}</h2>
-          <button className={styles.close} onClick={onClose} aria-label="Close">
+    <div
+      className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4"
+      onClick={onClose}
+    >
+      <div
+        className="bg-white border border-gray-200 rounded-2xl w-full max-w-md shadow-xl"
+        onClick={e => e.stopPropagation()}
+      >
+        <div className="flex items-center justify-between px-6 pt-5 pb-0">
+          <h2 className="font-display font-bold text-base text-gray-900">{title}</h2>
+          <button
+            onClick={onClose}
+            aria-label="Close"
+            className="text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-xl p-1 transition-colors"
+          >
             <X size={16} />
           </button>
         </div>
-        <div className={styles.body}>{children}</div>
+        <div className="p-6 pt-4">{children}</div>
       </div>
     </div>
   );
