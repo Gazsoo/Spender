@@ -39,6 +39,7 @@ public static class WebApplicationExtensions
         app.MapCategoryEndpoints();
         app.MapAnalyticsEndpoints();
         app.MapPeopleEndpoints();
+        app.MapHomeEndpoints();
 
         return app;
     }

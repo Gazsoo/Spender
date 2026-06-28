@@ -9,6 +9,8 @@ using Spender.Transactions.Services;
 using Spender.Categories.Services;
 using Spender.Analytics.Services;
 using Spender.Analytics.EventHandlers;
+using Spender.Home;
+using Spender.Home.Services;
 
 namespace Spender.API.Extensions;
 
@@ -27,6 +29,10 @@ public static class ServiceCollectionExtensions
         services.AddScoped<Spender.Transactions.Services.ITransactionService, Spender.Transactions.Services.TransactionService>();
         services.AddScoped<Spender.Categories.Services.ICategoryService, Spender.Categories.Services.CategoryService>();
         services.AddScoped<Spender.Analytics.Services.IAnalyticsService, Spender.Analytics.Services.AnalyticsService>();
+        services.AddScoped<ISensorIngestService, SensorIngestService>();
+
+        // Home options
+        services.Configure<HomeOptions>(configuration.GetSection(HomeOptions.SectionName));
 
         // MediatR for domain events
         services.AddMediatR(config =>

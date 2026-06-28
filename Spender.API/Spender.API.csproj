@@ -7,6 +7,7 @@
     <ProjectReference Include="..\Spender.Transactions\Spender.Transactions.csproj" />
     <ProjectReference Include="..\Spender.Categories\Spender.Categories.csproj" />
     <ProjectReference Include="..\Spender.Analytics\Spender.Analytics.csproj" />
+    <ProjectReference Include="..\Spender.Home\Spender.Home.csproj" />
   </ItemGroup>
 
   <ItemGroup>
