@@ -31,7 +31,7 @@ services:
       Home__Lat: "47.4719"
       Home__Lon: "19.0519"
       Home__WeatherPollIntervalMinutes: "10"
-      Home__CpuCompensationFactor: "0.5"
+      Home__CpuCompensationFactor: "0"
     depends_on:
       - postgres
 
