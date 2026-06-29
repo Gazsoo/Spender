@@ -49,7 +49,7 @@ services:
     restart: unless-stopped
     privileged: true
     environment:
-      API_URL: http://api:5020
+      API_URL: http://api:8080
       POLL_INTERVAL_SECONDS: "30"
       SENSOR_BACKEND: sensehat
     depends_on:
