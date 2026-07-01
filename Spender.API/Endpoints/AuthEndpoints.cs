@@ -29,7 +29,16 @@ public static class AuthEndpoints
                 new(ClaimTypes.Name, result.User.Name),
             };
             var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            await context.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity));
+
+            // Persist the cookie to disk so it survives the browser/PWA being closed.
+            // Without IsPersistent the framework issues a session cookie that is dropped on
+            // close, forcing a fresh login every time the installed app is reopened.
+            var authProperties = new AuthenticationProperties
+            {
+                IsPersistent = true,
+                ExpiresUtc = DateTimeOffset.UtcNow.AddDays(30),
+            };
+            await context.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity), authProperties);
 
             return Results.Ok(new AuthUserResponse(result.User.Email, result.User.Name));
         })

@@ -12,7 +12,7 @@ export default function LoginPage() {
   const { user, isLoading, signIn } = useAuth();
   const [error, setError] = useState<string | null>(null);
 
-  if (!isLoading && user) return <Navigate to="/dashboard" replace />;
+  if (!isLoading && user) return <Navigate to="/home" replace />;
 
   const handleSuccess = async (credentialResponse: CredentialResponse) => {
     setError(null);
