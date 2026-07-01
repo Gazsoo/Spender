@@ -39,4 +39,13 @@ public static class SensorMath
     /// <summary>CPU heat compensation. Default factor 0.5 (tunable).</summary>
     public static double Compensate(double tempRaw, double cpuTempC, double factor = 0.5)
         => tempRaw - (cpuTempC - 25.0) * factor;
+
+    /// <summary>
+    /// Whether a temperature source self-heats from the Pi and therefore needs
+    /// CPU compensation. Only the Sense HAT's onboard sensor does; external
+    /// sensors (e.g. DS18B20) are already accurate. A null/empty source is
+    /// treated as the Sense HAT for backward compatibility with older clients.
+    /// </summary>
+    public static bool IsSelfHeatingSource(string? source)
+        => string.IsNullOrEmpty(source) || source == "sensehat";
 }

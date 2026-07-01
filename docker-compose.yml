@@ -51,7 +51,11 @@ services:
     environment:
       API_URL: http://api:8080
       POLL_INTERVAL_SECONDS: "30"
-      SENSOR_BACKEND: sensehat
+      # composite = DS18B20 room temperature + Sense HAT humidity/pressure,
+      # falling back to the Sense HAT temperature if the DS18B20 is unavailable.
+      SENSOR_BACKEND: composite
+      # Optional: pin the 1-wire device; otherwise the first /sys/bus/w1/devices/28-* is used.
+      # DS18B20_DEVICE: /sys/bus/w1/devices/28-01191a4e89a8/temperature
     depends_on:
       - api
 

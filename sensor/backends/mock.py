@@ -18,4 +18,5 @@ class MockBackend(SensorBackend):
             temperature=round(temperature, 2),
             humidity=round(humidity, 2),
             pressure=round(pressure, 2),
+            source="mock",
         )

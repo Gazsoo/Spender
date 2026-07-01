@@ -12,4 +12,5 @@ public class SensorReading
     public decimal DewPoint { get; set; }
     public decimal FeelsLike { get; set; }
     public decimal? CpuTemperature { get; set; }
+    public string? TemperatureSource { get; set; }
 }
