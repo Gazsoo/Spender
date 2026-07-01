@@ -22,7 +22,9 @@ public class SensorIngestService : ISensorIngestService
         var humidity = (double)req.Humidity;
         var cpuTemp = (double?)req.CpuTemperature;
 
-        var tComp = cpuTemp.HasValue
+        // Only self-heating sensors (Sense HAT) need CPU compensation; external
+        // sensors such as the DS18B20 are already accurate and left untouched.
+        var tComp = (cpuTemp.HasValue && SensorMath.IsSelfHeatingSource(req.TemperatureSource))
             ? SensorMath.Compensate(tRaw, cpuTemp.Value, _factor)
             : tRaw;
 
@@ -35,7 +37,8 @@ public class SensorIngestService : ISensorIngestService
             Pressure = req.Pressure,
             DewPoint = (decimal)SensorMath.DewPoint(tComp, humidity),
             FeelsLike = (decimal)SensorMath.FeelsLike(tComp, humidity),
-            CpuTemperature = req.CpuTemperature
+            CpuTemperature = req.CpuTemperature,
+            TemperatureSource = req.TemperatureSource
         });
 
         await _db.SaveChangesAsync(ct);

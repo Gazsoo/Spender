@@ -6,7 +6,9 @@ import time
 
 import requests
 
-from backends.base import SensorBackend
+from backends.base import SensorBackend, SensorReading
+from backends.composite import CompositeBackend
+from backends.ds18b20 import Ds18b20Backend
 from backends.mock import MockBackend
 from backends.sensehat import SenseHatBackend
 
@@ -27,6 +29,12 @@ def build_backend() -> SensorBackend:
     if SENSOR_BACKEND == "mock":
         log.info("Using mock sensor backend")
         return MockBackend()
+    if SENSOR_BACKEND == "ds18b20":
+        log.info("Using DS18B20 sensor backend")
+        return Ds18b20Backend()
+    if SENSOR_BACKEND == "composite":
+        log.info("Using composite backend (DS18B20 temperature + Sense HAT humidity/pressure)")
+        return CompositeBackend()
     log.info("Using Sense HAT backend")
     return SenseHatBackend()
 
@@ -40,12 +48,13 @@ def get_cpu_temp() -> float | None:
         return None
 
 
-def post_reading(temperature: float, humidity: float, pressure: float, cpu: float | None) -> None:
+def post_reading(reading: SensorReading, cpu: float | None) -> None:
     payload = {
-        "temperatureRaw": temperature,
-        "humidity": humidity,
-        "pressure": pressure,
+        "temperatureRaw": reading.temperature,
+        "humidity": reading.humidity,
+        "pressure": reading.pressure,
         "cpuTemperature": round(cpu, 2) if cpu is not None else None,
+        "temperatureSource": reading.source,
     }
     resp = requests.post(INGEST_URL, json=payload, timeout=10)
     resp.raise_for_status()
@@ -61,10 +70,11 @@ def main() -> None:
             try:
                 reading = backend.read()
                 cpu = get_cpu_temp()
-                post_reading(reading.temperature, reading.humidity, reading.pressure, cpu)
+                post_reading(reading, cpu)
                 log.info(
-                    "Posted: temp=%.2f°C  hum=%.1f%%  pres=%.1f hPa  cpu=%s°C",
+                    "Posted: temp=%.2f°C (%s)  hum=%.1f%%  pres=%.1f hPa  cpu=%s°C",
                     reading.temperature,
+                    reading.source,
                     reading.humidity,
                     reading.pressure,
                     f"{cpu:.1f}" if cpu is not None else "n/a",

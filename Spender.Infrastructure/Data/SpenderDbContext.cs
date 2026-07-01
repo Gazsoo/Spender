@@ -70,6 +70,7 @@ public class SpenderDbContext : DbContext
             entity.Property(e => e.DewPoint).HasPrecision(6, 2);
             entity.Property(e => e.FeelsLike).HasPrecision(6, 2);
             entity.Property(e => e.CpuTemperature).HasPrecision(6, 2);
+            entity.Property(e => e.TemperatureSource).HasMaxLength(20);
             entity.HasIndex(e => e.RecordedAt);
         });
 

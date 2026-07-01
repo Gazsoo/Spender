@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Spender.Infrastructure.Data;
@@ -11,9 +12,11 @@ using Spender.Infrastructure.Data;
 namespace Spender.Infrastructure.Migrations
 {
     [DbContext(typeof(SpenderDbContext))]
-    partial class SpenderDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260701195127_AddSensorTemperatureSource")]
+    partial class AddSensorTemperatureSource
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

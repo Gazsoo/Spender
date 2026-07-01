@@ -7,6 +7,9 @@ class SensorReading:
     temperature: float
     humidity: float
     pressure: float
+    # Which sensor produced `temperature`. The server uses this to decide
+    # whether CPU-heat compensation applies (only the self-heating Sense HAT).
+    source: str = "sensehat"
 
 
 class SensorBackend(ABC):

@@ -49,4 +49,21 @@ public class SensorMathTests
         var result = SensorMath.Compensate(22.0, 25.0, 0.5);
         Assert.Equal(22.0, result, precision: 4);
     }
+
+    [Theory]
+    [InlineData("sensehat")]
+    [InlineData(null)]
+    [InlineData("")]
+    public void IsSelfHeatingSource_True_ForSenseHatAndLegacyClients(string? source)
+    {
+        Assert.True(SensorMath.IsSelfHeatingSource(source));
+    }
+
+    [Theory]
+    [InlineData("ds18b20")]
+    [InlineData("mock")]
+    public void IsSelfHeatingSource_False_ForExternalSensors(string source)
+    {
+        Assert.False(SensorMath.IsSelfHeatingSource(source));
+    }
 }

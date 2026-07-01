@@ -12,6 +12,7 @@ class SenseHatBackend(SensorBackend):
             temperature=self._hat.get_temperature(),
             humidity=self._hat.get_humidity(),
             pressure=self._hat.get_pressure(),
+            source="sensehat",
         )
 
     def close(self) -> None:

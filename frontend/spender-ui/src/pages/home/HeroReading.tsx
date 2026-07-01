@@ -14,6 +14,9 @@ export default function HeroReading({ sensor }: { sensor: SensorDto | null | und
   const temp = sensor?.temperatureCompensated ?? NaN;
   const animated = useCountUp(temp);
   const tone = tempTone(Number.isFinite(temp) ? temp : 18);
+  // The DS18B20 is the primary room sensor; anything else means it fell back
+  // to the Sense HAT (whose temperature is Pi-heat compensated, less accurate).
+  const onBackupSensor = !!sensor?.temperatureSource && sensor.temperatureSource !== 'ds18b20';
 
   return (
     <section
@@ -28,9 +31,19 @@ export default function HeroReading({ sensor }: { sensor: SensorDto | null | und
       />
 
       <div className="relative flex items-center justify-between gap-3">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-white/55">
-          In-room · Budapest XI
-        </p>
+        <div className="flex flex-wrap items-center gap-2">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-white/55">
+            In-room · Budapest XI
+          </p>
+          {onBackupSensor && (
+            <span
+              className="rounded-full bg-amber-400/15 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-amber-300"
+              title="Main room sensor offline — showing the Sense HAT's compensated temperature"
+            >
+              Backup sensor
+            </span>
+          )}
+        </div>
         <span
           className="rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.16em]"
           style={{ background: `${tone.base}26`, color: tone.glow }}

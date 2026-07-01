@@ -35,6 +35,7 @@ public class HomeDashboardService : IHomeDashboardService
             FeelsLike: latestSensor.FeelsLike,
             FeelsLikeHeatIndex: (decimal)SensorMath.FeelsLikeHeatIndex(
                 (double)latestSensor.TemperatureCompensated, (double)latestSensor.Humidity),
+            TemperatureSource: latestSensor.TemperatureSource,
             RecordedAt: latestSensor.RecordedAt
         );
 

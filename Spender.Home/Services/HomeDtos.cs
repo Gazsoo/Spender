@@ -5,7 +5,8 @@ public record SensorIngestRequest(
     decimal TemperatureRaw,
     decimal Humidity,
     decimal Pressure,
-    decimal? CpuTemperature
+    decimal? CpuTemperature,
+    string? TemperatureSource = null
 );
 
 public record HomeDashboardResponse(
@@ -22,6 +23,7 @@ public record SensorDto(
     decimal DewPoint,
     decimal FeelsLike,
     decimal FeelsLikeHeatIndex,
+    string? TemperatureSource,
     DateTime RecordedAt
 );
 
