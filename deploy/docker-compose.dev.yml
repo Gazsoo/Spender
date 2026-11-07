@@ -1,3 +1,7 @@
+# Pin the project name so volumes stay "spender_*" now that this file lives in deploy/
+# (otherwise Compose names the project after the folder: "deploy").
+name: spender
+
 services:
   postgres:
     image: postgres:18
