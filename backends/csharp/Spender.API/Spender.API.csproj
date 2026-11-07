@@ -31,9 +31,12 @@
     <UserSecretsId>49994fcd-9019-49d1-bd67-72ff99155fc7</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
 
-    <!-- Write the OpenAPI spec to disk on build so the frontend can generate its API client without a running server -->
+    <!-- Write the OpenAPI spec to the shared, committed contract at the monorepo root (contract/openapi.json).
+         The frontend generates its client from it, and every backend is checked against it.
+         CI fails if a C# change alters the spec without the updated contract being committed. -->
     <OpenApiGenerateDocumentsOnBuild>true</OpenApiGenerateDocumentsOnBuild>
-    <OpenApiDocumentsDirectory>$(MSBuildProjectDirectory)/openapi</OpenApiDocumentsDirectory>
+    <OpenApiDocumentsDirectory>$(MSBuildProjectDirectory)/../../../contract</OpenApiDocumentsDirectory>
+    <OpenApiGenerateDocumentsOptions>--file-name openapi</OpenApiGenerateDocumentsOptions>
   </PropertyGroup>
 
 </Project>

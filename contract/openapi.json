@@ -1,0 +1,1314 @@
+{
+  "openapi": "3.1.1",
+  "info": {
+    "title": "Spender API",
+    "description": "Household spending tracker API",
+    "version": "v1"
+  },
+  "paths": {
+    "/": {
+      "get": {
+        "tags": [
+          "Spender.API"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/home": {
+      "get": {
+        "tags": [
+          "Home"
+        ],
+        "operationId": "GetHome",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HomeDashboardResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/home/ingest": {
+      "post": {
+        "tags": [
+          "Home"
+        ],
+        "operationId": "IngestSensorReading",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SensorIngestRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        }
+      }
+    },
+    "/api/auth/google": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "operationId": "GoogleLogin",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GoogleLoginRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthUserResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/logout": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "operationId": "Logout",
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        }
+      }
+    },
+    "/api/auth/me": {
+      "get": {
+        "tags": [
+          "Auth"
+        ],
+        "operationId": "GetCurrentUser",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthUserResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/transactions": {
+      "get": {
+        "tags": [
+          "Transactions"
+        ],
+        "operationId": "GetTransactions",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Transaction"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Transactions"
+        ],
+        "operationId": "CreateTransaction",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTransactionRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Transaction"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/api/transactions/{id}": {
+      "get": {
+        "tags": [
+          "Transactions"
+        ],
+        "operationId": "GetTransactionById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Transaction"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Transactions"
+        ],
+        "operationId": "UpdateTransaction",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTransactionRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Transaction"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Transactions"
+        ],
+        "operationId": "DeleteTransaction",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/categories": {
+      "get": {
+        "tags": [
+          "Categories"
+        ],
+        "operationId": "GetCategories",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Category"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Categories"
+        ],
+        "operationId": "CreateCategory",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCategoryRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Category"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/api/categories/{id}": {
+      "get": {
+        "tags": [
+          "Categories"
+        ],
+        "operationId": "GetCategoryById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Category"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Categories"
+        ],
+        "operationId": "UpdateCategory",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCategoryRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Category"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Categories"
+        ],
+        "operationId": "DeleteCategory",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/api/analytics/monthly": {
+      "get": {
+        "tags": [
+          "Analytics"
+        ],
+        "operationId": "GetMonthlyAnalytics",
+        "parameters": [
+          {
+            "name": "year",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "month",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonthlySummary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/analytics/yearly": {
+      "get": {
+        "tags": [
+          "Analytics"
+        ],
+        "operationId": "GetYearlyAnalytics",
+        "parameters": [
+          {
+            "name": "year",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MonthlySummary"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/analytics/debt": {
+      "get": {
+        "tags": [
+          "Analytics"
+        ],
+        "operationId": "GetDebtSummary",
+        "parameters": [
+          {
+            "name": "perspectiveId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DebtSummary"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/api/people": {
+      "get": {
+        "tags": [
+          "People"
+        ],
+        "operationId": "GetPeople",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Person"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AuthErrorResponse": {
+        "required": [
+          "reason"
+        ],
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string"
+          }
+        }
+      },
+      "AuthUserResponse": {
+        "required": [
+          "email",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "Category": {
+        "required": [
+          "name",
+          "id",
+          "createdAt"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string"
+          },
+          "color": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "CategorySummary": {
+        "required": [
+          "categoryName",
+          "categoryId",
+          "amount",
+          "transactionCount"
+        ],
+        "type": "object",
+        "properties": {
+          "categoryId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "categoryName": {
+            "type": "string"
+          },
+          "color": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "amount": {
+            "type": "number",
+            "format": "double"
+          },
+          "transactionCount": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "CreateCategoryRequest": {
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "color": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "CreateTransactionRequest": {
+        "required": [
+          "amount",
+          "description",
+          "date",
+          "categoryId",
+          "expenseType"
+        ],
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "number",
+            "format": "double"
+          },
+          "description": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "categoryId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "expenseType": {
+            "$ref": "#/components/schemas/ExpenseType"
+          },
+          "paidById": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int32"
+          },
+          "fundedById": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int32"
+          }
+        }
+      },
+      "DebtByPerson": {
+        "required": [
+          "personName",
+          "personId",
+          "debt",
+          "transactionCount"
+        ],
+        "type": "object",
+        "properties": {
+          "personId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "personName": {
+            "type": "string"
+          },
+          "debt": {
+            "type": "number",
+            "format": "double"
+          },
+          "transactionCount": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "DebtSummary": {
+        "required": [
+          "perspectiveId",
+          "perspectiveName",
+          "netDebt",
+          "transactionCount",
+          "breakdown"
+        ],
+        "type": "object",
+        "properties": {
+          "perspectiveId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "perspectiveName": {
+            "type": "string"
+          },
+          "netDebt": {
+            "type": "number",
+            "format": "double"
+          },
+          "transactionCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "breakdown": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DebtByPerson"
+            }
+          }
+        }
+      },
+      "ExpenseType": {
+        "enum": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "type": "integer",
+        "x-enumNames": [
+          "Personal",
+          "Shared",
+          "SharedPrepaidJoint",
+          "SharedPrepaidByOne"
+        ]
+      },
+      "ForecastDayDto": {
+        "required": [
+          "date",
+          "tempMin",
+          "tempMax",
+          "weatherCode",
+          "precipitationMm"
+        ],
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "tempMin": {
+            "type": "number",
+            "format": "double"
+          },
+          "tempMax": {
+            "type": "number",
+            "format": "double"
+          },
+          "weatherCode": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "precipitationMm": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
+      "GoogleLoginRequest": {
+        "required": [
+          "credential"
+        ],
+        "type": "object",
+        "properties": {
+          "credential": {
+            "type": "string"
+          }
+        }
+      },
+      "HomeDashboardResponse": {
+        "required": [
+          "sensor",
+          "hungaromet",
+          "openMeteo"
+        ],
+        "type": "object",
+        "properties": {
+          "sensor": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/SensorDto"
+              }
+            ]
+          },
+          "hungaromet": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/HungaroMetDto"
+              }
+            ]
+          },
+          "openMeteo": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/OpenMeteoDto"
+              }
+            ]
+          }
+        }
+      },
+      "HungaroMetDto": {
+        "required": [
+          "temperature",
+          "feelsLike",
+          "feelsLikeHeatIndex",
+          "humidity",
+          "pressure",
+          "windSpeed",
+          "windDirection",
+          "stationName",
+          "observedAt"
+        ],
+        "type": "object",
+        "properties": {
+          "temperature": {
+            "type": "number",
+            "format": "double"
+          },
+          "feelsLike": {
+            "type": "number",
+            "format": "double"
+          },
+          "feelsLikeHeatIndex": {
+            "type": "number",
+            "format": "double"
+          },
+          "humidity": {
+            "type": "number",
+            "format": "double"
+          },
+          "pressure": {
+            "type": "number",
+            "format": "double"
+          },
+          "windSpeed": {
+            "type": "number",
+            "format": "double"
+          },
+          "windDirection": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "stationName": {
+            "type": "string"
+          },
+          "observedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "MonthlySummary": {
+        "required": [
+          "year",
+          "month",
+          "totalAmount",
+          "transactionCount",
+          "categories"
+        ],
+        "type": "object",
+        "properties": {
+          "year": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "month": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalAmount": {
+            "type": "number",
+            "format": "double"
+          },
+          "transactionCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "categories": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CategorySummary"
+            }
+          }
+        }
+      },
+      "OpenMeteoDto": {
+        "required": [
+          "temperature",
+          "feelsLike",
+          "humidity",
+          "pressure",
+          "windSpeed",
+          "weatherCode",
+          "updatedAt",
+          "forecast"
+        ],
+        "type": "object",
+        "properties": {
+          "temperature": {
+            "type": "number",
+            "format": "double"
+          },
+          "feelsLike": {
+            "type": "number",
+            "format": "double"
+          },
+          "humidity": {
+            "type": "number",
+            "format": "double"
+          },
+          "pressure": {
+            "type": "number",
+            "format": "double"
+          },
+          "windSpeed": {
+            "type": "number",
+            "format": "double"
+          },
+          "weatherCode": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "forecast": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ForecastDayDto"
+            }
+          }
+        }
+      },
+      "Person": {
+        "required": [
+          "name",
+          "id"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "SensorDto": {
+        "required": [
+          "temperatureRaw",
+          "temperatureCompensated",
+          "humidity",
+          "pressure",
+          "dewPoint",
+          "feelsLike",
+          "feelsLikeHeatIndex",
+          "temperatureSource",
+          "recordedAt"
+        ],
+        "type": "object",
+        "properties": {
+          "temperatureRaw": {
+            "type": "number",
+            "format": "double"
+          },
+          "temperatureCompensated": {
+            "type": "number",
+            "format": "double"
+          },
+          "humidity": {
+            "type": "number",
+            "format": "double"
+          },
+          "pressure": {
+            "type": "number",
+            "format": "double"
+          },
+          "dewPoint": {
+            "type": "number",
+            "format": "double"
+          },
+          "feelsLike": {
+            "type": "number",
+            "format": "double"
+          },
+          "feelsLikeHeatIndex": {
+            "type": "number",
+            "format": "double"
+          },
+          "temperatureSource": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "recordedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "SensorIngestRequest": {
+        "required": [
+          "temperatureRaw",
+          "humidity",
+          "pressure",
+          "cpuTemperature"
+        ],
+        "type": "object",
+        "properties": {
+          "temperatureRaw": {
+            "type": "number",
+            "format": "double"
+          },
+          "humidity": {
+            "type": "number",
+            "format": "double"
+          },
+          "pressure": {
+            "type": "number",
+            "format": "double"
+          },
+          "cpuTemperature": {
+            "type": [
+              "null",
+              "number"
+            ],
+            "format": "double"
+          },
+          "temperatureSource": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "Transaction": {
+        "required": [
+          "amount",
+          "description",
+          "id",
+          "date",
+          "createdAt",
+          "categoryId",
+          "category",
+          "expenseType"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "amount": {
+            "type": "number",
+            "format": "double"
+          },
+          "description": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "categoryId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "category": {
+            "$ref": "#/components/schemas/Category"
+          },
+          "expenseType": {
+            "$ref": "#/components/schemas/ExpenseType"
+          },
+          "paidById": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int32"
+          },
+          "fundedById": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int32"
+          },
+          "paidBy": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/Person"
+              }
+            ]
+          },
+          "fundedBy": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/Person"
+              }
+            ]
+          }
+        }
+      },
+      "UpdateCategoryRequest": {
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "color": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "UpdateTransactionRequest": {
+        "required": [
+          "amount",
+          "description",
+          "date",
+          "categoryId",
+          "expenseType"
+        ],
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "number",
+            "format": "double"
+          },
+          "description": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "categoryId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "expenseType": {
+            "$ref": "#/components/schemas/ExpenseType"
+          },
+          "paidById": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int32"
+          },
+          "fundedById": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int32"
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Spender.API"
+    },
+    {
+      "name": "Home"
+    },
+    {
+      "name": "Auth"
+    },
+    {
+      "name": "Transactions"
+    },
+    {
+      "name": "Categories"
+    },
+    {
+      "name": "Analytics"
+    },
+    {
+      "name": "People"
+    }
+  ]
+}

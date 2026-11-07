@@ -1,6 +1,6 @@
 # frontend/spender-ui/Dockerfile
-# Built from the repo root so the OpenAPI spec generated alongside Spender.API
-# is available for Orval codegen — see orval.config.ts (`../../Spender.API/openapi/...`).
+# Built from the repo root so the shared API contract (contract/openapi.json)
+# is available for Orval codegen — see orval.config.ts (`../../contract/openapi.json`).
 FROM --platform=$BUILDPLATFORM node:22-alpine AS build
 WORKDIR /repo/frontend/spender-ui
 
@@ -14,7 +14,7 @@ COPY frontend/spender-ui/package.json frontend/spender-ui/pnpm-lock.yaml fronten
 RUN npm install -g pnpm && pnpm install
 
 COPY frontend/spender-ui/ ./
-COPY Spender.API/openapi/ /repo/Spender.API/openapi/
+COPY contract/ /repo/contract/
 RUN pnpm exec orval
 RUN pnpm build
 

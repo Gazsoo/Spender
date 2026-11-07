@@ -17,7 +17,9 @@ RUN dotnet restore Spender.API/Spender.API.csproj
 
 # Copy everything and build
 COPY . .
-RUN dotnet publish Spender.API -c Release --no-restore -o /app/publish
+# The contract (contract/openapi.json) lives outside this build context and is
+# committed, so skip regenerating it inside the image build.
+RUN dotnet publish Spender.API -c Release --no-restore -o /app/publish -p:OpenApiGenerateDocumentsOnBuild=false
 
 # Runtime stage
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
