@@ -45,7 +45,7 @@ services:
   sensor:
     image: ${SENSOR_IMAGE:-spender-sensor}
     build:
-      context: ./sensor
+      context: ../sensor
     restart: unless-stopped
     privileged: true
     environment:

@@ -8,7 +8,8 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "generate": "dotnet build ../../Spender.API -c Debug -v quiet && orval"
+    "generate": "orval",
+    "generate:from-csharp": "dotnet build ../../backends/csharp/Spender.API -c Debug -v quiet && orval"
   },
   "dependencies": {
     "@react-oauth/google": "^0.13.5",

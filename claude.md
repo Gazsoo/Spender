@@ -2,11 +2,25 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Repository Layout (monorepo)
+
+```
+contract/openapi.json   Shared API contract (committed). Frontend codegen source; every backend must satisfy it.
+backends/csharp/        .NET 10 backend (Spender.slnx). Building Spender.API rewrites contract/openapi.json.
+frontend/spender-ui/    React + Vite frontend, backend-agnostic (talks to whatever serves the contract)
+sensor/                 Python Raspberry Pi sensor poller (posts readings to the API)
+deploy/                 docker-compose.yml, Caddyfile, .env.example, VS docker-compose.dcproj
+.github/workflows/      CI/CD (builds images, checks the contract is up to date, deploys to the Pi)
+```
+
+New backend implementations go in `backends/<language>/` and must implement `contract/openapi.json`.
+If a C# API change alters the spec, commit the regenerated `contract/openapi.json` — CI fails otherwise.
+
 ## Architecture Overview
 
 This is a microservices-based personal finance application with the following structure:
 
-### Backend - .NET 10 Microservices
+### Backend - .NET 10 Microservices (`backends/csharp/`)
 All backend services target .NET 10.0 with nullable reference types and implicit usings enabled:
 
 - **Spender.API** - Main web API service (entry point)
@@ -36,7 +50,9 @@ Located in `frontend/spender-ui/`:
 
 ### Backend (.NET)
 ```bash
-# Build entire solution
+cd backends/csharp
+
+# Build entire solution (also regenerates ../../contract/openapi.json)
 dotnet build
 
 # Run API locally
@@ -59,31 +75,31 @@ pnpm dev
 # Production build
 pnpm build
 
-# Generate Orval hooks + types (requires API running on :5020)
-pnpm generate          # regenerates src/api/ from openapi.json
-pnpm generate:fetch    # fetches fresh spec from live API, then generates
+# Generate Orval hooks + types from the shared contract (no backend needed)
+pnpm generate               # regenerates src/api/ from ../../contract/openapi.json
+pnpm generate:from-csharp   # rebuilds the C# API (refreshing the contract), then generates
 ```
 
 ### Docker Development
 ```bash
 # Build and run all services locally
-docker-compose up --build
+cd deploy && docker compose up --build
 
-# Build specific images
-docker build -t spender-api .
-docker build -t spender-frontend frontend/spender-ui/
+# Build specific images (from the repo root)
+docker build -t spender-api backends/csharp
+docker build -t spender-frontend -f frontend/spender-ui/Dockerfile .   # root context: needs contract/
 ```
 
 ## Key Configuration Files
 
 ### Docker Setup
-- `Dockerfile` - Multi-stage .NET API build (targets ARM64)
-- `frontend/spender-ui/Dockerfile` - Multi-stage Node.js + nginx frontend
-- `docker-compose.yml` - Local orchestration with PostgreSQL
-- `Caddyfile` - Reverse proxy configuration using environment variables
+- `backends/csharp/Dockerfile` - Multi-stage .NET API build (targets ARM64)
+- `frontend/spender-ui/Dockerfile` - Multi-stage Node.js + nginx frontend (built with repo-root context)
+- `deploy/docker-compose.yml` - Production orchestration with PostgreSQL (copied to the Pi by CI)
+- `deploy/Caddyfile` - Reverse proxy configuration using environment variables
 
 ### Environment Configuration
-- `.env.example` - Template with required variables:
+- `deploy/.env.example` - Template with required variables:
   - `API_IMAGE` / `FRONTEND_IMAGE` - Container registry paths
   - `DB_PASSWORD` - PostgreSQL password
   - `API_DOMAIN` / `APP_DOMAIN` - Caddy routing domains
